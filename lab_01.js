@@ -39,17 +39,17 @@ function Order() {
      */
     this.addBowl = (bowl, dailyLimits) => {
         if (bowl.size === 'Regular') {
-            dailyLimits.currentRegularBowls++;
+            dailyLimits.currentRegularBowls += bowl.amount;
             if (dailyLimits.currentRegularBowls > dailyLimits.maxRegularBowls) {
                 throw new Error('Daily limit for Regular bowls exceeded');
             }
         } else if (bowl.size === 'Medium') {
-            dailyLimits.currentMediumBowls++;
+            dailyLimits.currentMediumBowls += bowl.amount;
             if (dailyLimits.currentMediumBowls > dailyLimits.maxMediumBowls) {
                 throw new Error('Daily limit for Medium bowls exceeded');
             }
         } else if (bowl.size === 'Large') {
-            dailyLimits.currentLargeBowls++;
+            dailyLimits.currentLargeBowls += bowl.amount;
             if (dailyLimits.currentLargeBowls > dailyLimits.maxLargeBowls) {
                 throw new Error('Daily limit for Large bowls exceeded');
             }
@@ -92,7 +92,7 @@ function Bowl(size) {
     }
 
     /**
-     * Sets the amount of an item in the bowl.
+     * Sets the amount of bowls being ordered.
      * @param {number} amount - The amount to set.
      * @throws Will throw an error if an invalid amount is provided.
      */
@@ -188,10 +188,13 @@ let order = new Order();
 
 // Create a DailyLimits object to track how many bowls of each size have been ordered today
 let dailyLimits = new DailyLimits();
+console.log("Daily Limits (Before Orders):");
+console.log(JSON.stringify(dailyLimits, null, 2));
 
 // Bowl 1: The Classic
 // Large bowl with rice, tuna and the tropical twist of avocado & mango.
 let bowl1 = new Bowl("Large");
+bowl1.chooseAmount(1);
 bowl1.addBase("rice");
 bowl1.addProtein("tuna");
 bowl1.addIngredient("avocado");
@@ -201,6 +204,7 @@ order.addBowl(bowl1, dailyLimits);
 // Bowl 2: The Green Delight
 // Medium bowl with a base of salad, tofu as protein, complemented by kale and tomatoes.
 let bowl2 = new Bowl("Medium");
+bowl2.chooseAmount(1);
 bowl2.addBase("salad");
 bowl2.addProtein("tofu");
 bowl2.addIngredient("kale");
@@ -210,6 +214,7 @@ order.addBowl(bowl2, dailyLimits);
 // Bowl 3: The Protein Powerhouse
 // Large bowl with black rice, a mix of chicken and salmon, and vibrant peppers & corn.
 let bowl3 = new Bowl("Large");
+bowl3.chooseAmount(1);
 bowl3.addBase("black rice");
 bowl3.addProtein("chicken");
 bowl3.addProtein("salmon");
@@ -220,6 +225,7 @@ order.addBowl(bowl3, dailyLimits);
 // Bowl 4: The Light & Fresh
 // Regular bowl featuring a salad base, tuna protein, and a subtle mix of wakame and carrots.
 let bowl4 = new Bowl("Regular");
+bowl4.chooseAmount(1);
 bowl4.addBase("salad");
 bowl4.addProtein("tuna");
 bowl4.addIngredient("wakame");
@@ -229,11 +235,17 @@ order.addBowl(bowl4, dailyLimits);
 // Bowl 5: The Exotic Twist
 // Medium bowl with rice, tofu protein, accented by ananas and cashew nuts for a crunch.
 let bowl5 = new Bowl("Medium");
+bowl5.chooseAmount(1);
 bowl5.addBase("rice");
 bowl5.addProtein("tofu");
 bowl5.addIngredient("ananas");
 bowl5.addIngredient("cashew nuts");
 order.addBowl(bowl5, dailyLimits);
 
-// Print the final order (formatted) so you can review the complete object structure
+// Print the final order
+console.log("Final Order:");
 console.log(JSON.stringify(order, null, 2));
+
+// Print the updated daily limits after processing the order
+console.log("Daily Limits (After Orders):");
+console.log(JSON.stringify(dailyLimits, null, 2));
