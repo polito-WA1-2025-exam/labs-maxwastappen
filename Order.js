@@ -27,6 +27,11 @@ class Order {
         }
         this.bowls.push(bowl);
     }
+
+    showOrder() {
+        console.log('Final Order:');
+        console.log(JSON.stringify(this, null, 2));
+    }
 }
 
 module.exports = Order;

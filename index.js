@@ -30,6 +30,6 @@ createAndAddBowl('Regular', 1, 'salad', ['tuna'], ['wakame', 'carrots']);
 createAndAddBowl('Medium', 1, 'rice', ['tofu'], ['ananas', 'cashew nuts']);
 
 console.log('Final Order:');
-console.log(JSON.stringify(order, null, 2));
+order.showOrder()
 
 dailyLimits.showAvailableBowls();
