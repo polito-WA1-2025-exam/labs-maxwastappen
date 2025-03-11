@@ -71,7 +71,7 @@ class Bowl {
      * @throws Will throw an error if an invalid size is provided.
      */
     chooseSize(size) {
-        if (!this.validSizes.includes(size)) throw new Error('Invalid size');
+        if (!this.validSizes.includes(size)) throw new Error(size, ' is an invalid size');
         this.size = size;
     }
 
@@ -81,7 +81,7 @@ class Bowl {
      * @throws Will throw an error if an invalid amount is provided.
      */
     chooseAmount(amount) {
-        if (amount <= 0) throw new Error('Invalid amount');
+        if (amount <= 0) throw new Error(amount, ' is an invalid amount');
         this.amount = amount;
     }
 
@@ -91,7 +91,7 @@ class Bowl {
      * @throws Will throw an error if an invalid base is provided.
      */
     addBase(base) {
-        if (!this.validBases.includes(base)) throw new Error('Invalid base');
+        if (!this.validBases.includes(base)) throw new Error(base, ' is an invalid base');
         this.base = base;
     }
 
@@ -101,7 +101,7 @@ class Bowl {
      * @throws Will throw an error if an invalid protein is provided.
      */
     addProtein(protein) {
-        if (!this.validProteins.includes(protein)) throw new Error('Invalid protein');
+        if (!this.validProteins.includes(protein)) throw new Error(protein, ' is an invalid protein');
         this.protein.push(protein);
     }
 
@@ -111,7 +111,7 @@ class Bowl {
      * @throws Will throw an error if an invalid ingredient is provided.
      */
     addIngredient(ingredient) {
-        if (!this.validIngredients.includes(ingredient)) throw new Error('Invalid ingredient');
+        if (!this.validIngredients.includes(ingredient)) throw new Error(ingredient, ' is an invalid ingredient');
         this.ingredients.push(ingredient);
     }
 
