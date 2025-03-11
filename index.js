@@ -29,7 +29,6 @@ createAndAddBowl('Large', 1, 'black rice', ['chicken', 'salmon'], ['peppers', 'c
 createAndAddBowl('Regular', 1, 'salad', ['tuna'], ['wakame', 'carrots']);
 createAndAddBowl('Medium', 1, 'rice', ['tofu'], ['ananas', 'cashew nuts']);
 
-console.log('Final Order:');
 order.showOrder()
 
 dailyLimits.showAvailableBowls();

@@ -8,15 +8,58 @@ class Bowl {
      * @throws Will throw an error if an invalid size is provided.
      */
     constructor(size) {
+        /**
+         * @type {Array<string>}
+         * @description Valid sizes for the bowl.
+         */
         this.validSizes = ['Regular', 'Medium', 'Large'];
+
+        /**
+         * @type {Array<string>}
+         * @description Valid bases for the bowl.
+         */
         this.validBases = ['rice', 'black rice', 'salad'];
+
+        /**
+         * @type {Array<string>}
+         * @description Valid proteins for the bowl.
+         */
         this.validProteins = ['tuna', 'chicken', 'salmon', 'tofu'];
+
+        /**
+         * @type {Array<string>}
+         * @description Valid ingredients for the bowl.
+         */
         this.validIngredients = ['avocado', 'ananas', 'cashew nuts', 'kale', 'mango', 'peppers', 'corn', 'wakame', 'tomatoes', 'carrots', 'salad'];
 
+        /**
+         * @type {string|null}
+         * @description The size of the bowl.
+         */
         this.size = null;
+
+        /**
+         * @type {string|null}
+         * @description The base of the bowl.
+         */
         this.base = null;
+
+        /**
+         * @type {Array<string>}
+         * @description The proteins added to the bowl.
+         */
         this.protein = [];
+
+        /**
+         * @type {Array<string>}
+         * @description The ingredients added to the bowl.
+         */
         this.ingredients = [];
+
+        /**
+         * @type {number}
+         * @description The amount of bowls being ordered.
+         */
         this.amount = 0;
 
         if (size) this.chooseSize(size);
@@ -70,6 +113,17 @@ class Bowl {
     addIngredient(ingredient) {
         if (!this.validIngredients.includes(ingredient)) throw new Error('Invalid ingredient');
         this.ingredients.push(ingredient);
+    }
+
+    /**
+     * Displays the details of the bowl.
+     */
+    showBowl() {
+        console.log('- Size: ', this.size);
+        console.log('- Base: ', this.base);
+        console.log('- Proteins: ', this.protein);
+        console.log('- Ingredients: ', this.ingredients);
+        console.log('- Amount: ', this.amount);
     }
 }
 

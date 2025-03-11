@@ -28,9 +28,15 @@ class Order {
         this.bowls.push(bowl);
     }
 
+    /**
+     * Displays the current order.
+     */
     showOrder() {
-        console.log('Final Order:');
-        console.log(JSON.stringify(this, null, 2));
+        console.log('CURRENT ORDER\n\n');
+        this.bowls.forEach((bowl) => {
+            bowl.showBowl();
+            console.log('\n');
+        });
     }
 }
 
