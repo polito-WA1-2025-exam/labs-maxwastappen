@@ -31,9 +31,9 @@
 - **maxregularbowls**: INTEGER
 - **maxmediumbowls**: INTEGER
 - **maxlargebowls**: INTEGER
-- **currentregularbowls**: INTEGER CHECK (currentregularbowls <= maxregularbowls)
-- **currentmediumbowls**: INTEGER CHECK (currentmediumbowls <= maxmediumbowls)
-- **currentlargebowls**: INTEGER CHECK (currentlargebowls <= maxlargebowls)
+- **currentregularbowls**: INTEGER CHECK \(currentregularbowls \<= maxregularbowls\)
+- **currentmediumbowls**: INTEGER CHECK \(currentmediumbowls \<= maxmediumbowls\)
+- **currentlargebowls**: INTEGER CHECK \(currentlargebowls \<= maxlargebowls\)
 
 ### Bowls
 - **id**: INTEGER PRIMARY KEY AUTOINCREMENT
@@ -42,10 +42,16 @@
 - **ingredient_id**: INTEGER
 - **size_id**: INTEGER
 - **amount**: INTEGER
-- **UNIQUE (id, base_id, protein_id, ingredient_id, size_id)**
+- **UNIQUE \(base_id, protein_id, ingredient_id, size_id\)
 
 ### Orders
 - **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **bowl_id**: INTEGER
+- **revenue**: FLOAT
+- **date**: DATE
 
----
+### OrderBowls
+- **order_id**: INTEGER
+- **bowl_id**: INTEGER
+- **FOREIGN KEY \(order_id\) REFERENCES Orders\(id\)
+- **FOREIGN KEY \(bowl_id\) REFERENCES Bowls\(id\)
+- **PRIMARY KEY \(order_id, bowl_id\)
