@@ -1,0 +1,53 @@
+CREATE TABLE IF NOT EXISTS Ingredients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ingredient TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Proteins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    protein TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Bases (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    base TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Sizes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    size TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Dailylimits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    maxregularbowls INTEGER,
+    maxmediumbowls INTEGER,
+    maxlargebowls INTEGER,
+    currentregularbowls INTEGER CHECK (currentregularbowls <= maxregularbowls),
+    currentmediumbowls INTEGER CHECK (currentmediumbowls <= maxmediumbowls),
+    currentlargebowls INTEGER CHECK (currentlargebowls <= maxlargebowls)
+);
+
+CREATE TABLE IF NOT EXISTS Bowls (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    base_id INTEGER,
+    protein_id INTEGER,
+    ingredient_id INTEGER,
+    size_id INTEGER,
+    amount INTEGER,
+    UNIQUE (id, base_id, protein_id, ingredient_id, size_id)
+);
+
+CREATE TABLE IF NOT EXISTS Orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    revenue FLOAT,
+    date TEXT
+);
+
+CREATE TABLE IF NOT EXISTS OrderBowls (
+    order_id INTEGER,
+    bowl_id INTEGER,
+    FOREIGN KEY (order_id) REFERENCES Orders(id),
+    FOREIGN KEY (bowl_id) REFERENCES Bowls(id),
+    PRIMARY KEY (order_id, bowl_id)
+);
