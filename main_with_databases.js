@@ -69,6 +69,6 @@ const db = new sqlite3.Database('pokedb', (err) => {
     console.log(rows);
 
     // Retrieve rows from the 'Ingredients' table where the ID equals 2 and log the results.
-    rows = await retrieveFromWhere('Ingredients', 'id', '=', 2, db);
+    rows = await retrieveFromWhere('Proteins', 'id', '=', 2, db);
     console.log(rows);
 })();
