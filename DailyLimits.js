@@ -51,4 +51,4 @@ class DailyLimits {
     }
 }
 
-module.exports = DailyLimits;
+export default DailyLimits;

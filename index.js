@@ -1,6 +1,6 @@
-const DailyLimits = require('./DailyLimits');
-const Order = require('./Order');
-const Bowl = require('./Bowl');
+import DailyLimits from "./DailyLimits.js";
+import Order from './Order.js';
+import Bowl from './Bowl.js';
 
 // Sample items for Poke Bowl Track
 const order = new Order();
@@ -20,15 +20,14 @@ function createAndAddBowl(size, amount, base, proteins, ingredients) {
     bowl.addBase(base);
     proteins.forEach(protein => bowl.addProtein(protein));
     ingredients.forEach(ingredient => bowl.addIngredient(ingredient));
+    bowl.computePrice()
     order.addBowl(bowl, dailyLimits);
 }
 
 createAndAddBowl('Large', 1, 'rice', ['tuna'], ['avocado', 'mango']);
 createAndAddBowl('Medium', 1, 'salad', ['tofu'], ['kale', 'tomatoes']);
 createAndAddBowl('Large', 1, 'black rice', ['chicken', 'salmon'], ['peppers', 'corn']);
-createAndAddBowl('Regular', 1, 'salad', ['tuna'], ['wakame', 'carrots']);
+createAndAddBowl('Regular', 1, 'salad', ['tuna'], ['wakame', 'carrots', 'kale', 'tomatoes', 'peppers']);
 createAndAddBowl('Medium', 1, 'rice', ['tofu'], ['ananas', 'cashew nuts']);
 
 order.showOrder()
-
-dailyLimits.showAvailableBowls();
