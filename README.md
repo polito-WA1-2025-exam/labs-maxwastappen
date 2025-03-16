@@ -4,7 +4,7 @@
 - s336362 MARC'ANTONIO LOPEZ
 - s123456 GABRIELE TROVATO
 
-# Exercise "NAME OF EXERCISE"
+# Exercise "Poke"
 
 # Lab Journal
 

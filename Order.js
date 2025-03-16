@@ -26,6 +26,12 @@ class Order {
          * @description Indicates if a discount is applied.
          */
         this.discount = false;
+
+        /**
+         * @type {Array<string>}
+         * @description The list of special requests for the order.
+         */
+        this.specialRequests = [];
     }
 
     /**
@@ -50,6 +56,14 @@ class Order {
         this.totalPrice += bowl.price;
 
         this.totalBowls += bowl.amount;
+    }
+
+    /**
+     * Adds a special request to the order.
+     * @param {string} request - The special request to add.
+     */
+    addSpecialRequest(request) {
+        this.specialRequests.push(request);
     }
 
     /**
