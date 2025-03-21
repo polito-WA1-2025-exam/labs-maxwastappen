@@ -1,0 +1,27 @@
+{
+  "name": "labs-maxwastappen",
+  "version": "1.0.0",
+  "description": "- s336362 MARC'ANTONIO LOPEZ\r - s123456 GABRIELE TROVATO",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polito-WA1-2025-exam/labs-maxwastappen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polito-WA1-2025-exam/labs-maxwastappen/issues"
+  },
+  "homepage": "https://github.com/polito-WA1-2025-exam/labs-maxwastappen#readme",
+  "dependencies": {
+    "express": "^4.18.3",
+    "sqlite3": "^5.1.7",
+    "express-validator": "^7.0.1"
+  }
+}
