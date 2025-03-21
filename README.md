@@ -55,3 +55,140 @@
 - **FOREIGN KEY \(order_id\) REFERENCES Orders\(id\)
 - **FOREIGN KEY \(bowl_id\) REFERENCES Bowls\(id\)
 - **PRIMARY KEY \(order_id, bowl_id\)
+
+## API Documentation
+
+### Collections
+
+#### GET /[table]
+Retrieves all items from specified table (collection).
+```http
+GET /Ingredients HTTP/1.1
+```
+**Response** `200 OK`
+```json
+[
+    { "id": 1, "ingredient": "Avocado" },
+    { "id": 2, "ingredient": "Mango" }
+]
+```
+
+#### POST /[table]
+Creates a new item in the specified table.
+```http
+POST /Orders HTTP/1.1
+Content-Type: application/json
+
+{
+    "date": "2023-05-20T10:30:00.000Z",
+    "revenue": 15.99
+}
+```
+**Response** `201 Created`
+```json
+{
+    "id": 1
+}
+```
+**Error** `400 Bad Request`
+```json
+{
+    "errors": [{"msg": "Date must be in ISO 8601 format"}]
+}
+```
+
+### Elements
+
+#### GET /[table]/[id]
+Retrieves a specific item by ID.
+```http
+GET /Bases/1 HTTP/1.1
+```
+**Response** `200 OK`
+```json
+{
+    "id": 1,
+    "base": "White Rice"
+}
+```
+**Error** `400 Bad Request`
+```json
+{
+    "error": "ID must be an integer"
+}
+```
+
+#### PUT /[table]/[id]
+Updates all attributes of an existing item.
+```http
+PUT /Bowls/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "base_id": 1,
+    "protein_id": 2,
+    "ingredient_id": 3,
+    "size_id": 1,
+    "amount": 2
+}
+```
+**Response** `200 OK`
+```json
+{
+    "changes": 1
+}
+```
+
+#### PATCH /[table]/[id]
+Updates specific attributes of an existing item.
+```http
+PATCH /Orders/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "revenue": 25.99
+}
+```
+**Response** `200 OK`
+```json
+{
+    "changes": 1
+}
+```
+
+#### DELETE /[table]/[id]
+Deletes a specific item.
+```http
+DELETE /Ingredients/1 HTTP/1.1
+```
+**Response** `200 OK`
+```json
+{
+    "changes": 1
+}
+```
+
+### Search
+
+#### GET /[table]/search
+Searches items in a table using custom criteria.
+```http
+GET /Proteins/search?column=protein&condition=LIKE&value=%chicken% HTTP/1.1
+```
+**Response** `200 OK`
+```json
+[
+    { "id": 1, "protein": "Grilled Chicken" },
+    { "id": 2, "protein": "Chicken Teriyaki" }
+]
+```
+**Error** `400 Bad Request`
+```json
+{
+    "errors": [
+        {"msg": "Column is required"},
+        {"msg": "Condition is required"},
+        {"msg": "Value is required"}
+    ]
+}
+```
