@@ -1,5 +1,6 @@
 import express from 'express';
 import sqlite3 from 'sqlite3';
+import { body, param, query, validationResult } from 'express-validator';
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,16 @@ function isValidTable(table) {
 }
 
 /**
+ * Middleware to validate ID as an integer.
+ */
+const validateId = param('id').isInt().withMessage('ID must be an integer');
+
+/**
+ * Middleware to validate date format.
+ */
+const validateDate = body('date').optional().isISO8601().withMessage('Date must be in ISO 8601 format');
+
+/**
  * Retrieve all rows from a given table.
  */
 app.get('/:table', (req, res) => {
@@ -47,13 +58,21 @@ app.get('/:table', (req, res) => {
 /**
  * Search rows from the specified table with custom criteria.
  */
-app.get('/:table/search', (req, res) => {
+app.get('/:table/search', [
+    query('column').notEmpty().withMessage('Column is required'),
+    query('condition').notEmpty().withMessage('Condition is required'),
+    query('value').notEmpty().withMessage('Value is required')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const table = req.params.table;
     if (!isValidTable(table)) {
         return res.status(400).json({ error: 'Invalid table name' });
     }
     const { column, condition, value } = req.query;
-    // For security, we may further validate the column name.
     const query = `SELECT * FROM ${table} WHERE ${column} ${condition} ?`;
     db.all(query, [value], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -64,7 +83,12 @@ app.get('/:table/search', (req, res) => {
 /**
  * Retrieve a specific row by ID from the given table.
  */
-app.get('/:table/:id', (req, res) => {
+app.get('/:table/:id', validateId, (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const table = req.params.table;
     if (!isValidTable(table)) {
         return res.status(400).json({ error: 'Invalid table name' });
@@ -80,7 +104,12 @@ app.get('/:table/:id', (req, res) => {
  * Create a new row in the specified table.
  * Expects the request body to contain the column values.
  */
-app.post('/:table', (req, res) => {
+app.post('/:table', validateDate, (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const table = req.params.table;
     if (!isValidTable(table)) {
         return res.status(400).json({ error: 'Invalid table name' });
@@ -90,6 +119,10 @@ app.post('/:table', (req, res) => {
     const columns = keys.join(', ');
     const placeholders = keys.map(() => '?').join(', ');
     const values = keys.map((k) => req.body[k]);
+    // Assign to user with id=1
+    columns += ', user_id';
+    placeholders += ', ?';
+    values.push(1);
     const query = `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`;
     db.run(query, values, function (err) {
         if (err) return res.status(500).json({ error: err.message });
@@ -100,7 +133,12 @@ app.post('/:table', (req, res) => {
 /**
  * Update an existing row in the specified table by replacing all attributes.
  */
-app.put('/:table/:id', (req, res) => {
+app.put('/:table/:id', [validateId, validateDate], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const table = req.params.table;
     if (!isValidTable(table)) {
         return res.status(400).json({ error: 'Invalid table name' });
@@ -119,7 +157,12 @@ app.put('/:table/:id', (req, res) => {
 /**
  * Update specific attributes for a row in the specified table.
  */
-app.patch('/:table/:id', (req, res) => {
+app.patch('/:table/:id', [validateId, validateDate], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const table = req.params.table;
     if (!isValidTable(table)) {
         return res.status(400).json({ error: 'Invalid table name' });
@@ -138,7 +181,12 @@ app.patch('/:table/:id', (req, res) => {
 /**
  * Delete a row in the specified table by ID.
  */
-app.delete('/:table/:id', (req, res) => {
+app.delete('/:table/:id', validateId, (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const table = req.params.table;
     if (!isValidTable(table)) {
         return res.status(400).json({ error: 'Invalid table name' });
