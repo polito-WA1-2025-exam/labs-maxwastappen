@@ -81,19 +81,14 @@ Content-Type: application/json
 
 {
     "date": "2023-05-20T10:30:00.000Z",
-    "revenue": 15.99
+    "total": 15.99,
+    "status": "pending"
 }
 ```
 **Response** `201 Created`
 ```json
 {
     "id": 1
-}
-```
-**Error** `400 Bad Request`
-```json
-{
-    "errors": [{"msg": "Date must be in ISO 8601 format"}]
 }
 ```
 
@@ -109,12 +104,6 @@ GET /Bases/1 HTTP/1.1
 {
     "id": 1,
     "base": "White Rice"
-}
-```
-**Error** `400 Bad Request`
-```json
-{
-    "error": "ID must be an integer"
 }
 ```
 
@@ -146,25 +135,7 @@ PATCH /Orders/1 HTTP/1.1
 Content-Type: application/json
 
 {
-    "revenue": 25.99
-}
-```
-**Response** `200 OK`
-```json
-{
-    "changes": 1
-}
-```
-
-#### DELETE /[table]/[id]
-Deletes a specific item.
-```http
-DELETE /Ingredients/1 HTTP/1.1
-```
-**Response** `200 OK`
-```json
-{
-    "changes": 1
+    "status": "completed"
 }
 ```
 
@@ -173,7 +144,7 @@ DELETE /Ingredients/1 HTTP/1.1
 #### GET /[table]/search
 Searches items in a table using custom criteria.
 ```http
-GET /Proteins/search?column=protein&condition=LIKE&value=%chicken% HTTP/1.1
+GET /Proteins/search?column=protein&condition=LIKE&value=chicken HTTP/1.1
 ```
 **Response** `200 OK`
 ```json

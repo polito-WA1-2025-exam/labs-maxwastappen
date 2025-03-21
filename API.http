@@ -1,0 +1,40 @@
+### Get all items from a table
+GET http://localhost:3000/Ingredients HTTP/1.1
+
+### Search items in a table
+GET http://localhost:3000/Proteins/search?column=protein&condition=LIKE&value=chicken HTTP/1.1
+
+### Get item by ID
+GET http://localhost:3000/Bases/1 HTTP/1.1
+
+### Create new item
+POST http://localhost:3000/Orders HTTP/1.1
+Content-Type: application/json
+
+{
+    "date": "2023-05-20T10:30:00.000Z",
+    "revenue": 15.99
+}
+
+### Update item (PUT)
+PUT http://localhost:3000/Bowls/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "base_id": 1,
+    "protein_id": 2,
+    "ingredient_id": 3,
+    "size_id": 1,
+    "amount": 2
+}
+
+### Update item partially (PATCH)
+PATCH http://localhost:3000/Orders/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "revenue": 25.99
+}
+
+### Delete item
+DELETE http://localhost:3000/Ingredients/1 HTTP/1.1
