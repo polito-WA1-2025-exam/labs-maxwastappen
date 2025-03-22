@@ -10,62 +10,97 @@
 
 ## Database Schema
 
-### Ingredients
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **ingredient**: TEXT
+### Core Tables
 
-### Proteins
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **protein**: TEXT
+#### Ingredients
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| ingredient | TEXT | NOT NULL |
 
-### Bases
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **base**: TEXT
+#### Proteins
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| protein | TEXT | NOT NULL |
 
-### Sizes
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **size**: TEXT
+#### Bases
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| base | TEXT | NOT NULL |
 
-### Dailylimits
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **maxregularbowls**: INTEGER
-- **maxmediumbowls**: INTEGER
-- **maxlargebowls**: INTEGER
-- **currentregularbowls**: INTEGER CHECK \(currentregularbowls \<= maxregularbowls\)
-- **currentmediumbowls**: INTEGER CHECK \(currentmediumbowls \<= maxmediumbowls\)
-- **currentlargebowls**: INTEGER CHECK \(currentlargebowls \<= maxlargebowls\)
+#### Sizes
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| size | TEXT | NOT NULL |
 
-### Bowls
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **base_id**: INTEGER
-- **protein_id**: INTEGER
-- **ingredient_id**: INTEGER
-- **size_id**: INTEGER
-- **amount**: INTEGER
-- **UNIQUE \(base_id, protein_id, ingredient_id, size_id\)
+### Business Logic Tables
 
-### Orders
-- **id**: INTEGER PRIMARY KEY AUTOINCREMENT
-- **revenue**: FLOAT
-- **date**: DATE
+#### Dailylimits
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| maxregularbowls | INTEGER | NOT NULL |
+| maxmediumbowls | INTEGER | NOT NULL |
+| maxlargebowls | INTEGER | NOT NULL |
+| currentregularbowls | INTEGER | CHECK (currentregularbowls <= maxregularbowls) |
+| currentmediumbowls | INTEGER | CHECK (currentmediumbowls <= maxmediumbowls) |
+| currentlargebowls | INTEGER | CHECK (currentlargebowls <= maxlargebowls) |
 
-### OrderBowls
-- **order_id**: INTEGER
-- **bowl_id**: INTEGER
-- **FOREIGN KEY \(order_id\) REFERENCES Orders\(id\)
-- **FOREIGN KEY \(bowl_id\) REFERENCES Bowls\(id\)
-- **PRIMARY KEY \(order_id, bowl_id\)
+#### Bowls
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| base_id | INTEGER | FOREIGN KEY REFERENCES Bases(id) |
+| size_id | INTEGER | FOREIGN KEY REFERENCES Sizes(id) |
+| amount | INTEGER | NOT NULL |
 
-## API Documentation
+#### BowlProteins
+| Column | Type | Constraints |
+|--------|------|-------------|
+| bowl_id | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
+| protein_id | INTEGER | FOREIGN KEY REFERENCES Proteins(id) |
+| PRIMARY KEY | (bowl_id, protein_id) |
 
-### Collections
+#### BowlIngredients
+| Column | Type | Constraints |
+|--------|------|-------------|
+| bowl_id | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
+| ingredient_id | INTEGER | FOREIGN KEY REFERENCES Ingredients(id) |
+| PRIMARY KEY | (bowl_id, ingredient_id) |
 
-#### GET /[table]
-Retrieves all items from specified table (collection).
+#### Orders
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| revenue | FLOAT | NOT NULL |
+| date | DATE | NOT NULL |
+
+#### OrderBowls
+| Column | Type | Constraints |
+|--------|------|-------------|
+| order_id | INTEGER | FOREIGN KEY REFERENCES Orders(id) |
+| bowl_id | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
+| PRIMARY KEY | (order_id, bowl_id) |
+
+## REST API
+
+### Collection Endpoints
+
+#### List All Items
+```http
+GET /[table] HTTP/1.1
+```
+Returns all items from specified table.
+
+**Example Request:**
 ```http
 GET /Ingredients HTTP/1.1
 ```
-**Response** `200 OK`
+
+**Success Response:** `200 OK`
 ```json
 [
     { "id": 1, "ingredient": "Avocado" },
@@ -73,33 +108,44 @@ GET /Ingredients HTTP/1.1
 ]
 ```
 
-#### POST /[table]
-Creates a new item in the specified table.
+#### Create Item
+```http
+POST /[table] HTTP/1.1
+```
+Creates a new item in specified table.
+
+**Example Request:**
 ```http
 POST /Orders HTTP/1.1
 Content-Type: application/json
 
 {
     "date": "2023-05-20T10:30:00.000Z",
-    "total": 15.99,
-    "status": "pending"
+    "revenue": 15.99
 }
 ```
-**Response** `201 Created`
+
+**Success Response:** `201 Created`
 ```json
 {
     "id": 1
 }
 ```
 
-### Elements
+### Element Endpoints
 
-#### GET /[table]/[id]
-Retrieves a specific item by ID.
+#### Get Single Item
+```http
+GET /[table]/[id] HTTP/1.1
+```
+Retrieves specific item by ID.
+
+**Example Request:**
 ```http
 GET /Bases/1 HTTP/1.1
 ```
-**Response** `200 OK`
+
+**Success Response:** `200 OK`
 ```json
 {
     "id": 1,
@@ -107,8 +153,13 @@ GET /Bases/1 HTTP/1.1
 }
 ```
 
-#### PUT /[table]/[id]
-Updates all attributes of an existing item.
+#### Update Item
+```http
+PUT /[table]/[id] HTTP/1.1
+```
+Updates all attributes of an item.
+
+**Example Request:**
 ```http
 PUT /Bowls/1 HTTP/1.1
 Content-Type: application/json
@@ -121,39 +172,77 @@ Content-Type: application/json
     "amount": 2
 }
 ```
-**Response** `200 OK`
+
+**Success Response:** `200 OK`
 ```json
 {
     "changes": 1
 }
 ```
 
-#### PATCH /[table]/[id]
-Updates specific attributes of an existing item.
+#### Partial Update
+```http
+PATCH /[table]/[id] HTTP/1.1
+```
+Updates specific attributes of an item.
+
+**Example Request:**
 ```http
 PATCH /Orders/1 HTTP/1.1
 Content-Type: application/json
 
 {
-    "status": "completed"
+    "revenue": 25.99
 }
 ```
 
-### Search
+**Success Response:** `200 OK`
+```json
+{
+    "changes": 1
+}
+```
 
-#### GET /[table]/search
-Searches items in a table using custom criteria.
+#### Delete Item
+```http
+DELETE /[table]/[id] HTTP/1.1
+```
+Removes an item from the database.
+
+**Example Request:**
+```http
+DELETE /Ingredients/1 HTTP/1.1
+```
+
+**Success Response:** `200 OK`
+```json
+{
+    "changes": 1
+}
+```
+
+### Search Endpoint
+
+#### Search Items
+```http
+GET /[table]/search HTTP/1.1
+```
+Searches items using custom criteria.
+
+**Example Request:**
 ```http
 GET /Proteins/search?column=protein&condition=LIKE&value=chicken HTTP/1.1
 ```
-**Response** `200 OK`
+
+**Success Response:** `200 OK`
 ```json
 [
     { "id": 1, "protein": "Grilled Chicken" },
     { "id": 2, "protein": "Chicken Teriyaki" }
 ]
 ```
-**Error** `400 Bad Request`
+
+**Error Response:** `400 Bad Request`
 ```json
 {
     "errors": [
