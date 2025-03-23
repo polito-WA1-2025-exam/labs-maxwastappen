@@ -42,6 +42,7 @@ const validateDate = body('date').optional().isISO8601().withMessage('Date must 
 
 /**
  * Retrieve all rows from a given table.
+ * @param {string} table - The name of the table to retrieve data from.
  */
 app.get('/:table', (req, res) => {
     const table = req.params.table;
@@ -57,6 +58,10 @@ app.get('/:table', (req, res) => {
 
 /**
  * Search rows from the specified table with custom criteria.
+ * @param {string} table - The name of the table to search data from.
+ * @param {string} column - The column to apply the condition on.
+ * @param {string} condition - The type of condition (e.g., =, >).
+ * @param {string} value - The value to compare against.
  */
 app.get('/:table/search', [
     query('column').notEmpty().withMessage('Column is required'),
@@ -82,6 +87,8 @@ app.get('/:table/search', [
 
 /**
  * Retrieve a specific row by ID from the given table.
+ * @param {string} table - The name of the table to retrieve data from.
+ * @param {number} id - The ID of the row to retrieve.
  */
 app.get('/:table/:id', validateId, (req, res) => {
     const errors = validationResult(req);
@@ -103,6 +110,7 @@ app.get('/:table/:id', validateId, (req, res) => {
 /**
  * Create a new row in the specified table.
  * Expects the request body to contain the column values.
+ * @param {string} table - The name of the table to insert data into.
  */
 app.post('/:table', validateDate, (req, res) => {
     const errors = validationResult(req);
@@ -132,6 +140,8 @@ app.post('/:table', validateDate, (req, res) => {
 
 /**
  * Update an existing row in the specified table by replacing all attributes.
+ * @param {string} table - The name of the table to update data in.
+ * @param {number} id - The ID of the row to update.
  */
 app.put('/:table/:id', [validateId, validateDate], (req, res) => {
     const errors = validationResult(req);
@@ -156,6 +166,8 @@ app.put('/:table/:id', [validateId, validateDate], (req, res) => {
 
 /**
  * Update specific attributes for a row in the specified table.
+ * @param {string} table - The name of the table to update data in.
+ * @param {number} id - The ID of the row to update.
  */
 app.patch('/:table/:id', [validateId, validateDate], (req, res) => {
     const errors = validationResult(req);
@@ -180,6 +192,8 @@ app.patch('/:table/:id', [validateId, validateDate], (req, res) => {
 
 /**
  * Delete a row in the specified table by ID.
+ * @param {string} table - The name of the table to delete data from.
+ * @param {number} id - The ID of the row to delete.
  */
 app.delete('/:table/:id', validateId, (req, res) => {
     const errors = validationResult(req);
