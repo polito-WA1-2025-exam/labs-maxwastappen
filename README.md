@@ -13,76 +13,76 @@
 ### Core Tables
 
 #### Ingredients
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| ingredient | TEXT | NOT NULL |
+| Column   | Type    | Constraints          |
+|----------|---------|----------------------|
+| id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| ingredient | TEXT  | NOT NULL             |
 
 #### Proteins
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| protein | TEXT | NOT NULL |
+| Column   | Type    | Constraints          |
+|----------|---------|----------------------|
+| id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| protein  | TEXT  | NOT NULL             |
 
 #### Bases
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| base | TEXT | NOT NULL |
+| Column   | Type    | Constraints          |
+|----------|---------|----------------------|
+| id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| base     | TEXT  | NOT NULL             |
 
 #### Sizes
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| size | TEXT | NOT NULL |
+| Column   | Type    | Constraints          |
+|----------|---------|----------------------|
+| id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| size     | TEXT  | NOT NULL             |
 
 ### Business Logic Tables
 
 #### Dailylimits
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| maxregularbowls | INTEGER | NOT NULL |
-| maxmediumbowls | INTEGER | NOT NULL |
-| maxlargebowls | INTEGER | NOT NULL |
-| currentregularbowls | INTEGER | CHECK (currentregularbowls <= maxregularbowls) |
-| currentmediumbowls | INTEGER | CHECK (currentmediumbowls <= maxmediumbowls) |
-| currentlargebowls | INTEGER | CHECK (currentlargebowls <= maxlargebowls) |
+| Column               | Type    | Constraints                      |
+|----------------------|---------|----------------------------------|
+| id                   | INTEGER | PRIMARY KEY AUTOINCREMENT        |
+| maxregularbowls      | INTEGER | NOT NULL                         |
+| maxmediumbowls       | INTEGER | NOT NULL                         |
+| maxlargebowls        | INTEGER | NOT NULL                         |
+| currentregularbowls  | INTEGER | CHECK (currentregularbowls <= maxregularbowls) |
+| currentmediumbowls   | INTEGER | CHECK (currentmediumbowls <= maxmediumbowls) |
+| currentlargebowls    | INTEGER | CHECK (currentlargebowls <= maxlargebowls) |
 
 #### Bowls
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| base_id | INTEGER | FOREIGN KEY REFERENCES Bases(id) |
-| size_id | INTEGER | FOREIGN KEY REFERENCES Sizes(id) |
-| amount | INTEGER | NOT NULL |
+| Column   | Type    | Constraints          |
+|----------|---------|----------------------|
+| id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| base_id  | INTEGER | FOREIGN KEY REFERENCES Bases(id) |
+| size_id  | INTEGER | FOREIGN KEY REFERENCES Sizes(id) |
+| amount   | INTEGER | NOT NULL             |
 
 #### BowlProteins
-| Column | Type | Constraints |
-|--------|------|-------------|
-| bowl_id | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
-| protein_id | INTEGER | FOREIGN KEY REFERENCES Proteins(id) |
+| Column      | Type    | Constraints          |
+|-------------|---------|----------------------|
+| bowl_id     | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
+| protein_id  | INTEGER | FOREIGN KEY REFERENCES Proteins(id) |
 | PRIMARY KEY | (bowl_id, protein_id) |
 
 #### BowlIngredients
-| Column | Type | Constraints |
-|--------|------|-------------|
-| bowl_id | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
+| Column        | Type    | Constraints          |
+|---------------|---------|----------------------|
+| bowl_id       | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
 | ingredient_id | INTEGER | FOREIGN KEY REFERENCES Ingredients(id) |
-| PRIMARY KEY | (bowl_id, ingredient_id) |
+| PRIMARY KEY   | (bowl_id, ingredient_id) |
 
 #### Orders
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| revenue | FLOAT | NOT NULL |
-| date | DATE | NOT NULL |
+| Column   | Type     | Constraints          |
+|----------|----------|----------------------|
+| id       | INTEGER  | PRIMARY KEY AUTOINCREMENT |
+| revenue  | FLOAT    | NOT NULL             |
+| date     | DATE     | NOT NULL             |
 
 #### OrderBowls
-| Column | Type | Constraints |
-|--------|------|-------------|
-| order_id | INTEGER | FOREIGN KEY REFERENCES Orders(id) |
-| bowl_id | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
+| Column      | Type    | Constraints          |
+|-------------|---------|----------------------|
+| order_id    | INTEGER | FOREIGN KEY REFERENCES Orders(id) |
+| bowl_id     | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
 | PRIMARY KEY | (order_id, bowl_id) |
 
 ## REST API
@@ -93,7 +93,7 @@
 ```http
 GET /[table] HTTP/1.1
 ```
-Returns all items from specified table.
+Returns all items from the specified table.
 
 **Example Request:**
 ```http
@@ -112,7 +112,7 @@ GET /Ingredients HTTP/1.1
 ```http
 POST /[table] HTTP/1.1
 ```
-Creates a new item in specified table.
+Creates a new item in the specified table.
 
 **Example Request:**
 ```http
@@ -138,7 +138,7 @@ Content-Type: application/json
 ```http
 GET /[table]/[id] HTTP/1.1
 ```
-Retrieves specific item by ID.
+Retrieves a specific item by ID.
 
 **Example Request:**
 ```http
