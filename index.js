@@ -124,8 +124,8 @@ app.post('/:table', validateDate, (req, res) => {
     }
     // Exclude any provided id.
     const keys = Object.keys(req.body).filter((k) => k !== 'id');
-    const columns = keys.join(', ');
-    const placeholders = keys.map(() => '?').join(', ');
+    let columns = keys.join(', ');
+    let placeholders = keys.map(() => '?').join(', ');
     const values = keys.map((k) => req.body[k]);
     // Assign to user with id=1
     columns += ', user_id';
