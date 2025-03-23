@@ -146,13 +146,13 @@ class Bowl {
             case 'Medium':
                 if (this.ingredients.length > 4) {
                     let excess = this.ingredients.length - 4;
-                    this.price += excess * 0.2 * this.validSizes[this.size];
+                    this.price += excess * 0.2 * this.validSizes[this.size] * this.amount;
                 }
                 break;
             case 'Large':
                 if (this.ingredients.length > 6) {
                     let excess = this.ingredients.length - 6;
-                    this.price += excess * 0.2 * this.validSizes[this.size];
+                    this.price += excess * 0.2 * this.validSizes[this.size] * this.amount;
                 }
                 break;
         }

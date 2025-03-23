@@ -53,7 +53,7 @@ class Order {
         }
         this.bowls.push(bowl);
 
-        this.totalPrice += bowl.price;
+        this.totalPrice += bowl.price * bowl.amount;
 
         this.totalBowls += bowl.amount;
     }
