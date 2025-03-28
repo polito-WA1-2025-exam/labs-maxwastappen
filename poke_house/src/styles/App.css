@@ -45,3 +45,9 @@
   padding-bottom: 1rem;
   background-color: black;
 }
+
+/*CAROUSEL STYLING*/
+.container .row{
+  padding : 50px 0; 
+}
+
