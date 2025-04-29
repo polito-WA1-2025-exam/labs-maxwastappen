@@ -2,10 +2,10 @@
   "name": "labs-maxwastappen",
   "version": "1.0.0",
   "description": "- s336362 MARC'ANTONIO LOPEZ\r - s123456 GABRIELE TROVATO",
-  "main": "index.js",
+  "main": "without_react/index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "node without_react/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
