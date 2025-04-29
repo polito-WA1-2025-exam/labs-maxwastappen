@@ -1,44 +1,61 @@
-# Group "MaxWAstappen"
+# Project Poke Bowl Ordering System
 
-## Members
+## Team "MaxWAstappen"
 - s336362 MARC'ANTONIO LOPEZ
-- s123456 GABRIELE TROVATO
 
-# Exercise "Poke"
+## Project Overview
+This project is a complete ordering system for a poke bowl restaurant, featuring both:
+1. A backend REST API (Express.js + SQLite3)
+2. A modern frontend interface (React + Bootstrap)
 
-# Lab Journal
+![Poke Bowl](https://images.unsplash.com/photo-1604259597308-5321e8e4689c?q=80&w=2000)
 
-## Database Schema
+## Project Structure
+```
+├── README.md             # Project documentation
+├── package.json          # Main project dependencies
+├── my-app/               # React frontend
+└── without_react/        # Express.js backend
+```
 
-### Core Tables
+## Backend Implementation
 
-#### Ingredients
+### Technologies Used
+- Node.js with Express
+- SQLite3 for database
+- Express Validator for input validation
+
+### Database Schema
+
+#### Core Tables
+
+##### Ingredients
+| Column     | Type    | Constraints          |
+|------------|---------|----------------------|
+| id         | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| ingredient | TEXT    | NOT NULL             |
+
+##### Proteins
 | Column   | Type    | Constraints          |
 |----------|---------|----------------------|
 | id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| ingredient | TEXT  | NOT NULL             |
+| protein  | TEXT    | NOT NULL             |
 
-#### Proteins
+##### Bases
 | Column   | Type    | Constraints          |
 |----------|---------|----------------------|
 | id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| protein  | TEXT  | NOT NULL             |
+| base     | TEXT    | NOT NULL             |
 
-#### Bases
+##### Sizes
 | Column   | Type    | Constraints          |
 |----------|---------|----------------------|
 | id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| base     | TEXT  | NOT NULL             |
+| size     | TEXT    | NOT NULL             |
 
-#### Sizes
-| Column   | Type    | Constraints          |
-|----------|---------|----------------------|
-| id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| size     | TEXT  | NOT NULL             |
+#### Business Logic Tables
 
-### Business Logic Tables
-
-#### Dailylimits
+##### Dailylimits
 | Column               | Type    | Constraints                      |
 |----------------------|---------|----------------------------------|
 | id                   | INTEGER | PRIMARY KEY AUTOINCREMENT        |
@@ -49,7 +66,7 @@
 | currentmediumbowls   | INTEGER | CHECK (currentmediumbowls <= maxmediumbowls) |
 | currentlargebowls    | INTEGER | CHECK (currentlargebowls <= maxlargebowls) |
 
-#### Bowls
+##### Bowls
 | Column   | Type    | Constraints          |
 |----------|---------|----------------------|
 | id       | INTEGER | PRIMARY KEY AUTOINCREMENT |
@@ -57,39 +74,39 @@
 | size_id  | INTEGER | FOREIGN KEY REFERENCES Sizes(id) |
 | amount   | INTEGER | NOT NULL             |
 
-#### BowlProteins
+##### BowlProteins
 | Column      | Type    | Constraints          |
 |-------------|---------|----------------------|
 | bowl_id     | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
 | protein_id  | INTEGER | FOREIGN KEY REFERENCES Proteins(id) |
 | PRIMARY KEY | (bowl_id, protein_id) |
 
-#### BowlIngredients
+##### BowlIngredients
 | Column        | Type    | Constraints          |
 |---------------|---------|----------------------|
 | bowl_id       | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
 | ingredient_id | INTEGER | FOREIGN KEY REFERENCES Ingredients(id) |
 | PRIMARY KEY   | (bowl_id, ingredient_id) |
 
-#### Orders
+##### Orders
 | Column   | Type     | Constraints          |
 |----------|----------|----------------------|
 | id       | INTEGER  | PRIMARY KEY AUTOINCREMENT |
 | revenue  | FLOAT    | NOT NULL             |
 | date     | DATE     | NOT NULL             |
 
-#### OrderBowls
+##### OrderBowls
 | Column      | Type    | Constraints          |
 |-------------|---------|----------------------|
 | order_id    | INTEGER | FOREIGN KEY REFERENCES Orders(id) |
 | bowl_id     | INTEGER | FOREIGN KEY REFERENCES Bowls(id) |
 | PRIMARY KEY | (order_id, bowl_id) |
 
-## REST API
+### REST API Endpoints
 
-### Collection Endpoints
+#### Collection Endpoints
 
-#### List All Items
+##### List All Items
 ```http
 GET /[table] HTTP/1.1
 ```
@@ -108,7 +125,7 @@ GET /Ingredients HTTP/1.1
 ]
 ```
 
-#### Create Item
+##### Create Item
 ```http
 POST /[table] HTTP/1.1
 ```
@@ -120,7 +137,7 @@ POST /Orders HTTP/1.1
 Content-Type: application/json
 
 {
-    "date": "2023-05-20T10:30:00.000Z",
+    "date": "2025-04-29T10:30:00.000Z",
     "revenue": 15.99
 }
 ```
@@ -132,9 +149,9 @@ Content-Type: application/json
 }
 ```
 
-### Element Endpoints
+#### Element Endpoints
 
-#### Get Single Item
+##### Get Single Item
 ```http
 GET /[table]/[id] HTTP/1.1
 ```
@@ -153,77 +170,27 @@ GET /Bases/1 HTTP/1.1
 }
 ```
 
-#### Update Item
+##### Update Item
 ```http
 PUT /[table]/[id] HTTP/1.1
 ```
 Updates all attributes of an item.
 
-**Example Request:**
-```http
-PUT /Bowls/1 HTTP/1.1
-Content-Type: application/json
-
-{
-    "base_id": 1,
-    "protein_id": 2,
-    "ingredient_id": 3,
-    "size_id": 1,
-    "amount": 2
-}
-```
-
-**Success Response:** `200 OK`
-```json
-{
-    "changes": 1
-}
-```
-
-#### Partial Update
+##### Partial Update
 ```http
 PATCH /[table]/[id] HTTP/1.1
 ```
 Updates specific attributes of an item.
 
-**Example Request:**
-```http
-PATCH /Orders/1 HTTP/1.1
-Content-Type: application/json
-
-{
-    "revenue": 25.99
-}
-```
-
-**Success Response:** `200 OK`
-```json
-{
-    "changes": 1
-}
-```
-
-#### Delete Item
+##### Delete Item
 ```http
 DELETE /[table]/[id] HTTP/1.1
 ```
 Removes an item from the database.
 
-**Example Request:**
-```http
-DELETE /Ingredients/1 HTTP/1.1
-```
+#### Search Endpoint
 
-**Success Response:** `200 OK`
-```json
-{
-    "changes": 1
-}
-```
-
-### Search Endpoint
-
-#### Search Items
+##### Search Items
 ```http
 GET /[table]/search HTTP/1.1
 ```
@@ -234,21 +201,53 @@ Searches items using custom criteria.
 GET /Proteins/search?column=protein&condition=LIKE&value=chicken HTTP/1.1
 ```
 
-**Success Response:** `200 OK`
-```json
-[
-    { "id": 1, "protein": "Grilled Chicken" },
-    { "id": 2, "protein": "Chicken Teriyaki" }
-]
+## Frontend Implementation
+
+### Technologies Used
+- React 19
+- Bootstrap 5.3
+- Vite 6.2
+
+### Features
+- Modern, responsive UI
+- Interactive poke bowl builder
+- Multi-step ordering process
+- Quantity selection
+- Order summary with pricing
+
+### Components
+- **Navigation**: Top navigation bar
+- **Hero**: Landing banner with welcome message
+- **BowlSizeSelector**: Size selection (Regular, Medium, Large)
+- **Bases**: Selection of rice or salad base options
+- **Proteins**: Multiple protein options (Tuna, Salmon, Chicken, Tofu)
+- **Ingredients**: Various categories of toppings and dressings
+- **OrderForm**: Final order review and submission
+- **Footer**: Contact information and links
+
+### Building and Running
+
+#### Frontend
+```bash
+cd my-app
+npm install
+npm run dev
 ```
 
-**Error Response:** `400 Bad Request`
-```json
-{
-    "errors": [
-        {"msg": "Column is required"},
-        {"msg": "Condition is required"},
-        {"msg": "Value is required"}
-    ]
-}
-```
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies in both project folders:
+   ```bash
+   npm install
+   cd my-app && npm install
+   ```
+3. Start the backend server:
+   ```bash
+   npm start
+   ```
+4. In a new terminal, start the frontend:
+   ```bash
+   cd my-app && npm run dev
+   ```
+5. Access the application at http://localhost:5173
