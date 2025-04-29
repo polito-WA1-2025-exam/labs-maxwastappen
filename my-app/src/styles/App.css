@@ -652,6 +652,7 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 0; /* Add this to remove extra line height */
   font-size: 1.5rem;
   font-weight: 500;
   padding: 0;
@@ -710,6 +711,11 @@ nav {
   height: 32px !important;
   border-color: rgba(157, 80, 187, 0.7) !important;
   transition: all 0.2s ease;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 0 !important; /* Remove extra line height */
+  padding: 0 !important;
 }
 
 .quantity-btn:hover:not(:disabled) {
@@ -953,7 +959,7 @@ nav {
   font-size: 1.5rem;
   font-weight: 600;
   padding: 0 !important;
-  line-height: 1;
+  line-height: 0 !important; /* Adjusted to 0 to remove extra space */
   background: transparent !important;
   border: 2px solid rgba(157, 80, 187, 0.8) !important;
   color: white !important;
