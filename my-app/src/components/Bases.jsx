@@ -5,8 +5,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-// Receive baseOptions, selectedBaseId, and onSelectBase as props
-function Bases({ baseOptions, selectedBaseId, onSelectBase }) {
+// Receive baseOptions, selectedBaseId, and onSelectBase as props with defaults
+function Bases({ baseOptions = [], selectedBaseId = null, onSelectBase = () => {} }) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -41,41 +41,51 @@ function Bases({ baseOptions, selectedBaseId, onSelectBase }) {
                     </Col>
                 </Row>
 
-                <Row className={`card-grid ${isVisible ? 'visible' : ''}`}>
-                    {baseOptions.map((base) => (
-                        <Col key={base.id} xs={12} md={6} lg={4} className="mb-4">
-                            {/* Add border if selected */}
-                            <Card
-                                className={`modern-card h-100 ${selectedBaseId === base.id ? 'border border-primary border-3' : ''}`}
-                                onClick={() => onSelectBase(base.id)} // Call handler on click
-                                style={{ cursor: 'pointer' }} // Indicate clickable
-                            >
-                                <Card.Img
-                                    src={base.image}
-                                    alt={base.name}
-                                    className="modern-card-img"
-                                />
-                                <div className="card-gradient-overlay"></div>
-                                <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
-                                    <div className="card-content">
-                                        <h3 className="card-title">{base.name}</h3>
-                                        <p className="card-description">{base.description}</p>
-                                        <p className="card-price">€{base.price.toFixed(2)}</p> {/* Ensure price format */}
-                                    </div>
-
-                                    {/* Change button text based on selection */}
-                                    <Button
-                                        variant="primary"
-                                        className="card-button align-self-start mt-4"
-                                        onClick={(e) => { e.stopPropagation(); onSelectBase(base.id); }} // Prevent card click, call handler
-                                    >
-                                        {selectedBaseId === base.id ? 'Selected' : 'Select Base'}
-                                    </Button>
-                                </Card.ImgOverlay>
-                            </Card>
+                {baseOptions.length === 0 ? (
+                    <Row className="justify-content-center">
+                        <Col md={8} className="text-center">
+                            <div className="dark-bg p-4 rounded">
+                                <p>Loading base options...</p>
+                            </div>
                         </Col>
-                    ))}
-                </Row>
+                    </Row>
+                ) : (
+                    <Row className={`card-grid ${isVisible ? 'visible' : ''}`}>
+                        {baseOptions.map((base) => (
+                            <Col key={base.id} xs={12} md={6} lg={4} className="mb-4">
+                                {/* Add border if selected */}
+                                <Card
+                                    className={`modern-card h-100 ${selectedBaseId === base.id ? 'border border-primary border-3' : ''}`}
+                                    onClick={() => onSelectBase(base.id)} // Call handler on click
+                                    style={{ cursor: 'pointer' }} // Indicate clickable
+                                >
+                                    <Card.Img
+                                        src={base.image}
+                                        alt={base.name}
+                                        className="modern-card-img"
+                                    />
+                                    <div className="card-gradient-overlay"></div>
+                                    <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
+                                        <div className="card-content">
+                                            <h3 className="card-title">{base.name}</h3>
+                                            <p className="card-description">{base.description}</p>
+                                            <p className="card-price">€{base.price.toFixed(2)}</p> {/* Ensure price format */}
+                                        </div>
+
+                                        {/* Change button text based on selection */}
+                                        <Button
+                                            variant="primary"
+                                            className="card-button align-self-start mt-4"
+                                            onClick={(e) => { e.stopPropagation(); onSelectBase(base.id); }} // Prevent card click, call handler
+                                        >
+                                            {selectedBaseId === base.id ? 'Selected' : 'Select Base'}
+                                        </Button>
+                                    </Card.ImgOverlay>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                )}
             </Container>
         </div>
     );
