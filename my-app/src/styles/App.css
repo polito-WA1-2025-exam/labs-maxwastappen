@@ -1,1024 +1,1333 @@
+/**
+ * @file Stylesheet for a modern web application.
+ *
+ * This stylesheet defines styles for various components and layouts,
+ * including a responsive navigation bar, a full-width footer, a hero section,
+ * dark mode variations, shared section styling, modern cards, carousels,
+ * quantity selectors, tabs, and animation effects.
+ *
+ * It utilizes gradients, shadows, transitions, and responsive design
+ * principles to create a visually appealing and interactive user interface.
+ */
+
+/* ===== GLOBAL STYLES ===== */
+
+/* Styles for the root element (#root), often the main app container */
 #root {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0;
-  text-align: center;
+  max-width: 100%; /* Ensure it doesn't exceed the viewport width */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 0; /* Remove default padding */
+  text-align: center; /* Center text content within the root */
 }
 
-/* Dark Mode */
-.dark-mode {
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #121212;
+/* Styles applied to the main app container class (e.g., added to the body or #root) */
+.App {
+  width: 100vw; /* Make the app take the full viewport width */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-.dark-bg {
-  background-color: #1e1e1e;
-  color: rgba(255, 255, 255, 0.87);
+/* Override default Bootstrap container max-width */
+.container {
+  max-width: 1200px; /* Set a specific max width for the main content container */
+  margin: 0 auto; /* Center the container */
 }
 
-/* Alternating section backgrounds */
-.section-darker {
-  background-color: #161616;
-  color: rgba(255, 255, 255, 0.87);
-}
-
-.section-lighter {
-  background-color: #242424;
-  color: rgba(255, 255, 255, 0.87);
-}
-
-/* Footer Full Width */
-.footer-full-width {
-  width: 100%;
-  margin: 0;
-  padding-left: 0;
-  padding-right: 0;
-  box-sizing: border-box;
-  background-color: #111111 !important; /* Slightly darker than the darkest section */
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Basic card padding - likely from a starter template */
 .card {
   padding: 2em;
 }
 
+/* Styling for 'read the docs' type link - likely from a starter template */
 .read-the-docs {
   color: #888;
 }
 
-/* ===== NAVIGATION ===== */
+/* Logo styling and animation */
+.logo {
+  height: 6em; /* Set initial height */
+  padding: 1.5em; /* Add padding around the logo */
+  will-change: filter; /* Optimize for filter changes */
+  transition: filter 300ms; /* Smooth transition for the filter effect */
+}
+
+/* Hover effect for the base logo */
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa); /* Add a blue-ish drop shadow on hover */
+}
+
+/* Specific hover effect for the React logo */
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa); /* Add a React green drop shadow on hover */
+}
+
+/* Keyframes for a spinning animation */
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg); /* Start rotation */
+  }
+  to {
+    transform: rotate(360deg); /* End rotation (one full spin) */
+  }
+}
+
+/* Apply logo spin animation only when reduced motion is not preferred */
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear; /* Apply infinite spin animation */
+  }
+}
+
+/* ===== DARK MODE STYLES ===== */
+
+/* Global dark mode styles */
+.dark-mode {
+  color: rgba(255, 255, 255, 0.87); /* Light text color with transparency */
+  background-color: #121212; /* Very dark background */
+}
+
+/* Dark background specific class */
+.dark-bg {
+  background-color: #1e1e1e; /* Slightly lighter dark background */
+  color: rgba(255, 255, 255, 0.87); /* Light text color */
+}
+
+/* Alternating section backgrounds in dark mode */
+.section-darker {
+  background-color: #161616; /* Darkest section background */
+  color: rgba(255, 255, 255, 0.87); /* Light text color */
+}
+
+.section-lighter {
+  background-color: #242424; /* Lighter dark section background */
+  color: rgba(255, 255, 255, 0.87); /* Light text color */
+}
+
+/* Special styling for the footer to be full width and have a distinct dark background */
+.footer-full-width {
+  width: 100%; /* Full width */
+  margin: 0; /* Remove margins */
+  padding-left: 0; /* Remove left padding */
+  padding-right: 0; /* Remove right padding */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  background-color: #111111 !important; /* Very dark background, !important to override potential defaults */
+  position: relative; /* Needed for positioning child elements */
+  display: flex; /* Use flexbox for centering content */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  height: 5vh; /* Small height for a minimalist footer */
+}
+
+/* ===== NAVIGATION STYLES ===== */
+
+/* Overall navigation container */
 nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  transition: all 0.3s ease;
+  position: fixed; /* Keep navbar fixed at the top */
+  top: 0; /* Align to the top edge */
+  left: 0; /* Align to the left edge */
+  width: 100%; /* Full width */
+  z-index: 1000; /* Ensure it stays above other content */
+  transition: all 0.3s ease; /* Smooth transition for changes (like background on scroll) */
 }
 
+/* Base styles for the custom navbar */
 .custom-navbar {
-  background-color: transparent;
-  padding: 1rem 0;
-  transition: all 0.3s ease;
+  background-color: transparent; /* Initially transparent */
+  padding: 1rem 0; /* Vertical padding */
+  transition: all 0.3s ease; /* Smooth transition for padding and background */
 }
 
+/* Styles applied to the navbar when scrolled */
 .navbar-scrolled {
-  background-color: rgba(25, 26, 65, 0.95) !important;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  padding: 0.5rem 0;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(25, 26, 65, 0.95) !important; /* Semi-transparent dark background */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+  padding: 0.5rem 0; /* Reduced vertical padding when scrolled */
+  backdrop-filter: blur(10px); /* Apply backdrop blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Vendor prefix for backdrop blur */
 }
 
+/* Styling for the brand/logo text in the navbar */
 .brand-text {
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: white;
-  letter-spacing: 0.5px;
-  background: linear-gradient(to right, #ffffff, #e0e0e0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-weight: 700; /* Bold font */
+  font-size: 1.5rem; /* Set font size */
+  color: white; /* Fallback color */
+  letter-spacing: 0.5px; /* Slight letter spacing */
+  background: linear-gradient(to right, #ffffff, #e0e0e0); /* Apply a white to light gray gradient */
+  -webkit-background-clip: text; /* Clip the background to the text shape (for gradient text) */
+  background-clip: text; /* Clip the background to the text shape (standard) */
+  color: transparent; /* Make the text color transparent so the background is visible */
 }
 
+/* Styling for custom navigation links */
 .nav-link-custom {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-weight: 500;
-  margin: 0 0.5rem;
-  transition: all 0.3s ease;
-  position: relative;
-  padding: 0.5rem 0.7rem !important;
+  color: rgba(255, 255, 255, 0.8) !important; /* Light color with transparency */
+  font-weight: 500; /* Medium font weight */
+  margin: 0 0.5rem; /* Horizontal margin between links */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  position: relative; /* Needed for the pseudo-element underline */
+  padding: 0.5rem 0.7rem !important; /* Vertical and horizontal padding */
 }
 
+/* Hover effect for custom navigation links */
 .nav-link-custom:hover {
-  color: white !important;
+  color: white !important; /* Change text color to solid white on hover */
 }
 
+/* Pseudo-element for the animated underline effect */
 .nav-link-custom::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 50%;
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
+  content: ''; /* Required for pseudo-elements */
+  position: absolute; /* Position relative to the link */
+  width: 0; /* Start with zero width */
+  height: 2px; /* Underline thickness */
+  bottom: 0; /* Position at the bottom of the link */
+  left: 50%; /* Start positioning from the center */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient for the underline */
+  transition: all 0.3s ease; /* Smooth transition for the width */
+  transform: translateX(-50%); /* Correctly center the underline */
 }
 
+/* Expand the underline on link hover */
 .nav-link-custom:hover::after {
-  width: 80%;
+  width: 80%; /* Expand the underline width on hover */
 }
 
+/* Styling for an "Order" button in the navbar */
 .order-button {
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  border: none;
-  padding: 0.5rem 1.5rem;
-  font-weight: 500;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient background */
+  border: none; /* Remove default border */
+  padding: 0.5rem 1.5rem; /* Button padding */
+  font-weight: 500; /* Medium font weight */
+  border-radius: 50px; /* Pill shape */
+  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4); /* Add shadow */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
 
+/* Hover effect for the order button */
 .order-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6);
-  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%);
+  transform: translateY(-2px); /* Lift the button slightly on hover */
+  box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6); /* Enhance shadow on hover */
+  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%); /* Slightly change gradient on hover */
 }
 
+/* Styling for the mobile navbar toggler button */
 .navbar-toggler {
-  border: none;
-  padding: 0.5rem;
+  border: none; /* Remove default border */
+  padding: 0.5rem; /* Add padding */
 }
 
+/* Remove outline/box shadow on toggler focus */
 .navbar-toggler:focus {
-  box-shadow: none;
-  outline: none;
+  box-shadow: none; /* Remove focus shadow */
+  outline: none; /* Remove outline */
 }
 
-/* ===== FOOTER ===== */
+/* ===== FOOTER STYLES ===== */
+
+/* Main footer container */
 .custom-footer {
-  background: linear-gradient(135deg, rgba(25, 26, 65, 0.95) 0%, rgba(44, 45, 87, 0.9) 100%);
-  color: white;
-  width: 100%;
-  padding: 3rem 0 0;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, rgba(25, 26, 65, 0.95) 0%, rgba(44, 45, 87, 0.9) 100%); /* Semi-transparent gradient background */
+  color: white; /* Default text color */
+  width: 100%; /* Full width */
+  padding: 3rem 0 0; /* Top and bottom padding */
+  backdrop-filter: blur(10px); /* Apply backdrop blur */
+  -webkit-backdrop-filter: blur(10px); /* Vendor prefix */
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2); /* Add shadow at the top */
 }
 
+/* Styling for the brand/logo text in the footer */
 .footer-brand-text {
-  font-weight: 700;
-  font-size: 1.5rem;
-  letter-spacing: 0.5px;
-  background: linear-gradient(to right, #ffffff, #e0e0e0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-weight: 700; /* Bold font */
+  font-size: 1.5rem; /* Set font size */
+  letter-spacing: 0.5px; /* Slight letter spacing */
+  background: linear-gradient(to right, #ffffff, #e0e0e0); /* White to light gray gradient */
+  -webkit-background-clip: text; /* Clip background to text shape */
+  background-clip: text; /* Clip background to text shape */
+  color: transparent; /* Make text transparent */
 }
 
+/* Styling for section headings within the footer */
 .footer-heading {
-  font-weight: 600;
-  color: white;
-  position: relative;
-  display: inline-block;
+  font-weight: 600; /* Semi-bold font */
+  color: white; /* White text color */
+  position: relative; /* Needed for the pseudo-element underline */
+  display: inline-block; /* Allows pseudo-element positioning relative to text width */
 }
 
+/* Pseudo-element for the underline under footer headings */
 .footer-heading::after {
-  content: '';
-  position: absolute;
-  width: 40px;
-  height: 2px;
-  bottom: -8px;
-  left: 0;
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  content: ''; /* Required for pseudo-elements */
+  position: absolute; /* Position relative to the heading */
+  width: 40px; /* Fixed width underline */
+  height: 2px; /* Underline thickness */
+  bottom: -8px; /* Position below the text */
+  left: 0; /* Align to the left of the text */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient for the underline */
 }
 
+/* Styling for standard text within the footer */
 .footer-text {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8); /* Light text color with transparency */
+  font-size: 0.9rem; /* Slightly smaller font size */
+  line-height: 1.6; /* Increased line height for readability */
 }
 
+/* Styling for footer links (e.g., in navigation or contact lists) */
 .footer-link {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-  padding: 0.3rem 0 !important;
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8) !important; /* Light color with transparency */
+  font-weight: 500; /* Medium font weight */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  position: relative; /* Needed for the pseudo-element underline */
+  padding: 0.3rem 0 !important; /* Vertical padding */
+  font-size: 0.9rem; /* Slightly smaller font size */
+  display: inline-block; /* Ensures link takes up space for padding and positioning */
 }
 
+/* Hover effect for footer links */
 .footer-link:hover {
-  color: white !important;
-  transform: translateX(5px);
+  color: white !important; /* Solid white text color on hover */
+  transform: translateX(5px); /* Slide the link slightly to the right on hover */
 }
 
+/* Pseudo-element for the animated underline effect on footer links */
 .footer-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  transition: all 0.3s ease;
+  content: ''; /* Required for pseudo-elements */
+  position: absolute; /* Position relative to the link */
+  width: 0; /* Start with zero width */
+  height: 2px; /* Underline thickness */
+  bottom: 0; /* Position at the bottom */
+  left: 0; /* Align to the left */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient for the underline */
+  transition: all 0.3s ease; /* Smooth transition for width */
 }
 
+/* Expand the underline on footer link hover */
 .footer-link:hover::after {
-  width: 80%;
+  width: 80%; /* Expand the underline width on hover */
 }
 
+/* Container for footer social icons */
 .footer-social {
-  display: flex;
-  gap: 15px;
+  display: flex; /* Arrange icons in a row */
+  gap: 15px; /* Space between icons */
 }
 
+/* Styling for individual social icons */
 .social-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  color: white !important;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  font-size: 0.8rem;
-  font-weight: 500;
+  display: flex; /* Use flexbox to center icon inside the circle */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  width: 36px; /* Fixed width */
+  height: 36px; /* Fixed height */
+  border-radius: 50%; /* Make it a circle */
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+  color: white !important; /* White icon color */
+  text-decoration: none; /* Remove underline */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  font-size: 0.8rem; /* Slightly smaller icon/text size */
+  font-weight: 500; /* Medium font weight */
 }
 
+/* Hover effect for social icons */
 .social-icon:hover {
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(110, 72, 170, 0.4);
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Apply gradient background on hover */
+  transform: translateY(-3px); /* Lift the icon slightly */
+  box-shadow: 0 5px 15px rgba(110, 72, 170, 0.4); /* Add shadow on hover */
 }
 
+/* Styling for a button within the footer */
 .footer-button {
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  border: none;
-  padding: 0.5rem 1.5rem;
-  font-weight: 500;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient background */
+  border: none; /* Remove default border */
+  padding: 0.5rem 1.5rem; /* Padding */
+  font-weight: 500; /* Medium font weight */
+  border-radius: 50px; /* Pill shape */
+  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4); /* Add shadow */
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
+/* Hover effect for footer buttons */
 .footer-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6);
-  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%);
+  transform: translateY(-2px); /* Lift the button slightly */
+  box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6); /* Enhance shadow */
+  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%); /* Slightly change gradient */
 }
 
+/* Styling for the horizontal divider line in the footer */
 .footer-divider {
-  border-color: rgba(255, 255, 255, 0.1);
-  margin: 1rem 0;
+  border-color: rgba(255, 255, 255, 0.1); /* Light border color with transparency */
+  margin: 1rem 0; /* Vertical margin */
 }
 
+/* Styling for the copyright text */
 .footer-copyright {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6); /* Lighter text color with more transparency */
+  font-size: 0.85rem; /* Smaller font size */
 }
 
+/* Responsive adjustments for footer on smaller screens */
 @media (max-width: 768px) {
   .custom-footer {
-    padding-top: 2rem;
+    padding-top: 2rem; /* Reduce top padding */
   }
-  
+
   .footer-brand-text {
-    font-size: 1.3rem;
+    font-size: 1.3rem; /* Reduce font size */
   }
 }
 
-/* ===== HERO ===== */
+/* ===== HERO SECTION STYLES ===== */
+
+/* Main hero section container */
 .hero {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 0 2rem;
-  overflow: hidden;
-  background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c');
-  background-size: cover;
-  background-position: center;
-  color: #ffffff;
+  position: relative; /* Needed for positioning overlay and content */
+  display: flex; /* Use flexbox to center content */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  min-height: 100vh; /* Make it at least the full viewport height */
+  padding: 0 2rem; /* Horizontal padding */
+  overflow: hidden; /* Hide any overflowing content */
+  background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c'); /* Background image */
+  background-size: cover; /* Cover the entire container */
+  background-position: center; /* Center the background image */
+  color: #ffffff; /* Default text color for the hero */
+  text-align: center; /* Center text within the hero */
 }
 
+/* Overlay for the hero background image */
 .hero-bg-overlay {
-  position: absolute;
+  position: absolute; /* Position relative to the hero container */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(76, 0, 112, 0.85) 0%, rgba(25, 26, 65, 0.9) 100%);
-  z-index: 1;
+  background: linear-gradient(135deg, rgba(76, 0, 112, 0.85) 0%, rgba(25, 26, 65, 0.9) 100%); /* Gradient overlay with transparency */
+  z-index: 1; /* Position below the content */
 }
 
+/* Container for the hero content */
 .hero-content {
-  position: relative;
-  z-index: 2;
+  position: relative; /* Needed for z-index */
+  z-index: 2; /* Position above the overlay */
+  max-width: 900px; /* Limit the width of the content */
 }
 
+/* Styling for the main hero heading */
 .hero h1 {
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  font-size: 4.5rem;
-  background: linear-gradient(to right, #ffffff, #c9c9c9);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 0.5rem;
+  font-weight: 800; /* Extra bold font */
+  margin-bottom: 0.5rem; /* Spacing below heading */
+  letter-spacing: -0.5px; /* Slight negative letter spacing */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Add text shadow */
+  font-size: 4.5rem; /* Large font size */
+  background: linear-gradient(to right, #ffffff, #c9c9c9); /* White to light gray gradient */
+  -webkit-background-clip: text; /* Clip background to text shape */
+  background-clip: text; /* Clip background to text shape */
+  color: transparent; /* Make text transparent */
 }
 
+/* Styling for the hero tagline */
 .hero-tagline {
-  font-size: 1.5rem;
-  font-weight: 300;
-  opacity: 0.9;
-  margin-bottom: 2.5rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  letter-spacing: 1px;
+  font-size: 1.5rem; /* Set font size */
+  font-weight: 300; /* Light font weight */
+  opacity: 0.9; /* Slightly transparent */
+  margin-bottom: 2.5rem; /* Spacing below tagline */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Add text shadow */
+  letter-spacing: 1px; /* Increased letter spacing */
 }
 
+/* Container for hero buttons */
 .hero-buttons {
-  margin-top: 2rem;
+  margin-top: 2rem; /* Space above buttons */
+  display: flex; /* Use flexbox for button layout */
+  justify-content: center; /* Center buttons horizontally */
+  gap: 1.5rem; /* Space between buttons */
 }
 
+/* Styling for the primary button in the hero section (likely overriding Bootstrap) */
 .hero .btn-primary {
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  border: none;
-  padding: 0.75rem 2.5rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient background */
+  border: none; /* Remove default border */
+  padding: 0.75rem 2.5rem; /* Padding */
+  font-weight: 600; /* Semi-bold font weight */
+  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4); /* Add shadow */
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
+/* Hover effect for the primary hero button */
 .hero .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 7px 15px rgba(110, 72, 170, 0.6);
+  transform: translateY(-3px); /* Lift the button */
+  box-shadow: 0 7px 15px rgba(110, 72, 170, 0.6); /* Enhance shadow */
 }
 
+/* Styling for the outline button in the hero section (likely overriding Bootstrap) */
 .hero .btn-outline-light {
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  padding: 0.75rem 2.5rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.7); /* Light border with transparency */
+  padding: 0.75rem 2.5rem; /* Padding */
+  font-weight: 600; /* Semi-bold font weight */
+  transition: all 0.3s ease; /* Smooth transition */
+  color: white; /* Ensure text color is white */
 }
 
+/* Hover effect for the outline hero button */
 .hero .btn-outline-light:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-color: #ffffff;
-  transform: translateY(-3px);
+  background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent background on hover */
+  border-color: #ffffff; /* Solid white border on hover */
+  transform: translateY(-3px); /* Lift the button */
 }
 
-/* Animation classes */
-.fade-in {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s ease, transform 1s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Z-index utility class */
-.z-2 {
-  z-index: 2;
-}
-
-/* Responsive styling */
+/* Responsive adjustments for hero section */
 @media (max-width: 768px) {
   .hero h1 {
-    font-size: 3.5rem;
+    font-size: 3.5rem; /* Reduce heading size */
   }
-  
+
   .hero-tagline {
-    font-size: 1.25rem;
+    font-size: 1.25rem; /* Reduce tagline size */
   }
-  
+
   .hero-buttons .btn {
-    padding: 0.6rem 1.8rem;
+    padding: 0.6rem 1.8rem; /* Adjust button padding */
   }
 }
 
 @media (max-width: 576px) {
   .hero h1 {
-    font-size: 2.8rem;
+    font-size: 2.8rem; /* Further reduce heading size */
   }
-  
+
+  .hero-buttons {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 1rem; /* Adjust gap when stacked */
+  }
+
   .hero-buttons .btn {
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
-    margin-right: 0 !important;
+    display: block; /* Make buttons take full width */
+    width: 100%; /* Full width */
+    margin-bottom: 1rem; /* Add space between stacked buttons */
+    margin-right: 0 !important; /* Remove right margin from flex item */
   }
-}
-
-.bases, .proteins, .ingredients {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  min-height: 100vh;
-  color: rgba(255, 255, 255, 0.87);
-}
-
-.footer-full-width {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5vh;
-  padding: 0;
-  margin: 0;
-  background-color: #111 !important; /* Darker than the darkest section */
-}
-
-/* Added for making the app take full width */
-.App {
-  width: 100vw;
-  overflow-x: hidden;
-}
-
-/* Container full width override for dark mode */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 /* ===== SHARED SECTION STYLING ===== */
+
+/* Base styling for content sections (e.g., Bases, Proteins, Ingredients) */
+.bases,
+.proteins,
+.ingredients {
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  gap: 2rem; /* Space between flex items */
+  min-height: 100vh; /* Ensure section is at least full viewport height */
+  color: rgba(255, 255, 255, 0.87); /* Default text color */
+  padding: 6rem 0; /* Add top and bottom padding */
+  text-align: center; /* Center text content within the section */
+}
+
+/* Container for the main content within a section */
 .section-content {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 6rem 0;
+  min-height: 100vh; /* Ensure content area is at least full viewport height */
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: center; /* Center content vertically */
+  padding: 6rem 0; /* Add top and bottom padding */
 }
 
+/* Container for the section header elements (title, subtitle, divider) */
 .section-header {
-  margin-bottom: 3rem;
+  margin-bottom: 3rem; /* Space below the header */
 }
 
+/* Styling for the main section title */
 .section-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(to right, #ffffff, #c9c9c9);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
+  font-size: 3rem; /* Set font size */
+  font-weight: 700; /* Bold font weight */
+  margin-bottom: 1.5rem; /* Space below the title */
+  background: linear-gradient(to right, #ffffff, #c9c9c9); /* White to light gray gradient */
+  -webkit-background-clip: text; /* Clip background to text shape */
+  background-clip: text; /* Clip background to text shape */
+  color: transparent; /* Make text transparent */
+  display: inline-block; /* Allows gradient clipping on block elements */
 }
 
+/* Styling for the horizontal divider line under the section title */
 .section-divider {
-  height: 4px;
-  width: 80px;
-  background: linear-gradient(90deg, #6e48aa, #9d50bb);
-  margin: 0 auto 1.5rem;
-  border-radius: 2px;
+  height: 4px; /* Divider thickness */
+  width: 80px; /* Divider width */
+  background: linear-gradient(90deg, #6e48aa, #9d50bb); /* Gradient background */
+  margin: 0 auto 1.5rem; /* Center horizontally and add bottom margin */
+  border-radius: 2px; /* Slightly rounded corners */
 }
 
+/* Styling for the section subtitle/description */
 .section-subtitle {
-  font-size: 1.25rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 700px;
-  margin: 0 auto;
+  font-size: 1.25rem; /* Set font size */
+  font-weight: 300; /* Light font weight */
+  color: rgba(255, 255, 255, 0.8); /* Light color with transparency */
+  max-width: 700px; /* Limit max width for readability */
+  margin: 0 auto; /* Center horizontally */
 }
 
-/* ===== CARD STYLING ===== */
+/* ===== MODERN CARD STYLES ===== */
+
+/* Base styling for a modern card */
 .modern-card {
-  overflow: hidden;
-  border: none !important; /* Remove any border */
-  border-radius: 16px;
-  height: 400px;
-  width: 100%; /* Use full width */
+  overflow: hidden; /* Hide overflowing content (especially image corners) */
+  border: none !important; /* Remove default border */
+  border-radius: 16px; /* Rounded corners */
+  height: 400px; /* Fixed height (adjust for grid later) */
+  width: 100%; /* Full width within its container */
   margin: 0; /* Remove margins */
   padding: 0; /* Remove padding */
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  background-color: transparent !important; /* Make card background transparent */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  background-color: transparent !important; /* Make card background transparent to show image/overlay */
+  position: relative; /* Needed for absolute positioning of image/overlay */
+  display: flex; /* Use flexbox to align content */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: flex-end; /* Align content to the bottom */
 }
 
+/* Hover effect for the modern card */
 .modern-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-5px); /* Lift the card slightly */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* Enhance shadow */
 }
 
+/* Container for the card image */
 .card-image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  border-radius: 16px;
+  position: absolute; /* Position relative to the card */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: hidden; /* Hide parts of the image that exceed the container */
+  margin: 0; /* Remove margins */
+  padding: 0; /* Remove padding */
+  border-radius: 16px; /* Match card border radius */
+  z-index: 0; /* Position below overlay and content */
 }
 
+/* Styling for the card image */
 .modern-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-  display: block; /* Ensure image is a block element */
-  margin: 0; /* Remove any margin */
-  padding: 0; /* Remove any padding */
+  width: 100%; /* Full width of its container */
+  height: 100%; /* Full height of its container */
+  object-fit: cover; /* Cover the container while maintaining aspect ratio */
+  transition: transform 0.5s ease; /* Smooth transition for potential hover effects (if applied to image) */
+  display: block; /* Ensure the image behaves as a block element */
+  margin: 0; /* Remove default image margins */
+  padding: 0; /* Remove default image padding */
+  border-radius: 16px; /* Match container border radius */
+}
+
+/* Gradient overlay for the card image */
+.card-gradient-overlay {
+  position: absolute; /* Position relative to the card */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%); /* Gradient from semi-transparent black to darker black */
+  z-index: 1; /* Position above the image */
   border-radius: 16px; /* Match card border radius */
 }
 
-.card-gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
-  z-index: 1;
-}
-
+/* Container for the card text content */
 .card-content {
-  z-index: 2;
+  z-index: 2; /* Position above the image and overlay */
+  position: relative; /* Needed for z-index and positioning context */
+  padding: 1.5rem; /* Padding inside the content area */
+  width: 100%; /* Ensure content takes full width */
+  box-sizing: border-box; /* Include padding in width */
+  color: white; /* Default text color for content */
+  text-align: left; /* Align text to the left */
 }
 
+/* Styling for the card title */
 .card-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 2rem; /* Set font size */
+  font-weight: 600; /* Semi-bold font weight */
+  margin-bottom: 0.5rem; /* Space below title */
+  color: #ffffff; /* White text color */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add text shadow */
 }
 
+/* Styling for the card description */
 .card-description {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem; /* Set font size */
+  margin-bottom: 0.5rem; /* Space below description */
+  color: rgba(255, 255, 255, 0.9); /* Light text color with transparency */
 }
 
+/* Styling for the card price display */
 .card-price {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  display: inline-block;
-  padding: 0.25rem 1rem;
-  border-radius: 50px;
-  margin-top: 0.5rem;
+  position: absolute; /* Position it absolutely within the card */
+  top: 15px; /* Position at the top */
+  right: 15px; /* Position at the right */
+  font-size: 1.25rem; /* Set font size */
+  font-weight: 600; /* Semi-bold font weight */
+  color: #ffffff; /* White text color */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient background */
+  display: inline-block; /* Allows background and padding */
+  padding: 0.25rem 1rem; /* Padding around the price */
+  border-radius: 50px; /* Pill shape */
+  margin-top: 0; /* Remove top margin */
+  z-index: 3; /* Ensure it's above the gradient overlay */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
 }
 
+/* Styling for a button within the card */
 .card-button {
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%) !important;
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%) !important; /* Gradient background, !important to override */
+  border: none !important; /* Remove border, !important to override */
+  padding: 0.6rem 1.5rem; /* Padding */
+  font-weight: 600; /* Semi-bold font weight */
+  border-radius: 50px; /* Pill shape */
+  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4); /* Add shadow */
+  transition: all 0.3s ease; /* Smooth transition */
+  color: white !important; /* White text color, !important to override */
+  opacity: 1 !important; /* Ensure full opacity, !important to override */
+  filter: brightness(1) !important; /* Prevent any darkening effects, !important to override */
+  mix-blend-mode: normal !important; /* Prevent any blending effects, !important to override */
+  z-index: 5; /* Ensure it's above card elements */
+  position: relative; /* Needed to establish stacking context */
+}
+
+/* Hover effect for the card button */
+.card-button:hover {
+  transform: translateY(-2px); /* Lift the button slightly */
+  box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6); /* Enhance shadow */
+  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%) !important; /* Slightly change gradient, !important to override */
+}
+
+/* Styling for the danger button to remove items */
+.card-button-danger {
+  background: linear-gradient(135deg, #e53e3e 0%, #ef5350 100%) !important;
   border: none !important;
   padding: 0.6rem 1.5rem;
   font-weight: 600;
   border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
   transition: all 0.3s ease;
   color: white !important;
-  opacity: 1 !important; /* Ensure no opacity reduction */
-  filter: brightness(1) !important; /* Prevent any darkening */
-  mix-blend-mode: normal !important; /* Prevent any blending effects */
-  z-index: 5; /* Ensure it's above any overlays */
+  opacity: 1 !important;
+  z-index: 5;
+  position: relative;
 }
 
-.card-button:hover {
+/* Hover effect for the danger button */
+.card-button-danger:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6);
-  background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%) !important;
+  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.6);
+  background: linear-gradient(135deg, #d32f2f 0%, #e57373 100%) !important;
 }
 
-/* ===== CAROUSEL STYLING ===== */
+/* Styling for the card buttons to ensure consistent size */
+.card-button,
+.card-button-danger {
+  width: 100px; /* Fixed width for all buttons */
+  padding: 0.6rem 0; /* Vertical padding only since we have fixed width */
+  text-align: center; /* Center the text */
+  font-weight: 600; /* Semi-bold font weight */
+  border-radius: 50px; /* Pill shape */
+  transition: all 0.3s ease; /* Smooth transition */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Add consistent margin between buttons in the button container */
+.d-flex.justify-content-between .card-button,
+.d-flex.justify-content-between .card-button-danger {
+  margin: 0 5px; /* Add horizontal margin for spacing */
+}
+
+/* ===== CAROUSEL STYLES ===== */
+
+/* Base styling for a modern carousel */
 .modern-carousel {
-  display: none;
+  /* Often used with Bootstrap Carousel */
+  display: none; /* Example: Initially hidden or used for smaller screens */
 }
 
+/* Positioning for carousel indicators */
 .modern-carousel .carousel-indicators {
-  bottom: -40px;
+  bottom: -40px; /* Position indicators below the carousel */
 }
 
+/* Styling for individual carousel indicators */
 .modern-carousel .carousel-indicators [data-bs-target] {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
-  margin: 0 5px;
-  transition: all 0.3s ease;
+  width: 10px; /* Indicator width */
+  height: 10px; /* Indicator height */
+  border-radius: 50%; /* Make them circles */
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+  margin: 0 5px; /* Space between indicators */
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
+/* Styling for the active carousel indicator */
 .modern-carousel .carousel-indicators .active {
-  background-color: #9d50bb;
-  transform: scale(1.2);
+  background-color: #9d50bb; /* Active indicator color */
+  transform: scale(1.2); /* Slightly enlarge the active indicator */
 }
 
+/* Styling for carousel control arrows (previous/next) */
 .modern-carousel .carousel-control-prev,
 .modern-carousel .carousel-control-next {
-  width: 10%;
-  opacity: 0.7;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+  width: 10%; /* Make the clickable area smaller */
+  opacity: 0.7; /* Make arrows slightly transparent */
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5)); /* Add shadow to arrows */
 }
 
+/* Styling for carousel control icons */
 .modern-carousel .carousel-control-prev-icon,
 .modern-carousel .carousel-control-next-icon {
-  width: 40px;
-  height: 40px;
+  width: 40px; /* Set icon width */
+  height: 40px; /* Set icon height */
 }
 
-/* ===== MODERN QUANTITY SELECTOR ===== */
+/* ===== QUANTITY SELECTOR STYLES ===== */
+
+/* Styling for a 'modern' quantity selector component */
 .modern-quantity-selector {
-  border-radius: 8px;
-  background: rgba(30, 30, 30, 0.9);
-  border: 1px solid rgba(157, 80, 187, 0.5);
-  padding: 0.5rem 1rem;
-  gap: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  display: flex; /* Arrange buttons and display in a row */
+  align-items: center; /* Align items vertically */
+  justify-content: center; /* Center horizontally */
+  border-radius: 8px; /* Rounded corners */
+  background: rgba(30, 30, 30, 0.9); /* Dark semi-transparent background */
+  border: 1px solid rgba(157, 80, 187, 0.5); /* Purple border with transparency */
+  padding: 0.5rem 1rem; /* Padding */
+  gap: 1rem; /* Space between items */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
+/* Styling for buttons within the modern quantity selector */
 .modern-quantity-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50% !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 0; /* Add this to remove extra line height */
-  font-size: 1.5rem;
-  font-weight: 500;
-  padding: 0;
-  transition: all 0.2s ease;
-  background: transparent;
-  border-color: rgba(157, 80, 187, 0.7) !important;
-  color: white;
+  width: 38px; /* Fixed width */
+  height: 38px; /* Fixed height */
+  border-radius: 50% !important; /* Make it a circle, !important to override */
+  display: flex; /* Use flexbox to center content */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  line-height: 0; /* Remove extra line height for better vertical centering */
+  font-size: 1.5rem; /* Set font size for the +/- symbol */
+  font-weight: 500; /* Medium font weight */
+  padding: 0; /* Remove default button padding */
+  transition: all 0.2s ease; /* Smooth transition for hover/active effects */
+  background: transparent; /* Transparent background */
+  border-color: rgba(157, 80, 187, 0.7) !important; /* Purple border, !important to override */
+  color: white; /* White text color */
+  cursor: pointer; /* Indicate it's clickable */
 }
 
+/* Hover effect for modern quantity buttons (when not disabled) */
 .modern-quantity-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background-color: rgba(157, 80, 187, 0.3);
-  border-color: rgba(157, 80, 187, 1) !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px); /* Lift the button slightly */
+  background-color: rgba(157, 80, 187, 0.3); /* Add a semi-transparent purple background */
+  border-color: rgba(157, 80, 187, 1) !important; /* Solid purple border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
 }
 
+/* Styling for disabled modern quantity buttons */
 .modern-quantity-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.5; /* Reduce opacity */
+  cursor: not-allowed; /* Indicate not clickable */
 }
 
+/* Styling for the quantity display number */
 .modern-quantity-display {
-  font-size: 1.25rem;
-  font-weight: 600;
-  min-width: 30px;
-  text-align: center;
-  color: white;
+  font-size: 1.25rem; /* Set font size */
+  font-weight: 600; /* Semi-bold font weight */
+  min-width: 30px; /* Ensure minimum width for alignment */
+  text-align: center; /* Center the number */
+  color: white; /* White text color */
 }
 
-/* ===== MODERN BUTTONS ===== */
-.modern-btn {
-  border-radius: 8px !important;
-  padding: 0.6rem 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-width: 2px !important;
-}
+/* --- Alternative/Older Quantity Selector Styles --- */
 
-.modern-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Override the default quantity selector for ingredients */
+/* Override for a generic 'quantity-selector' class (potentially older/different component) */
 .quantity-selector {
-  background-color: rgba(30, 30, 30, 0.9) !important;
-  border: 1px solid rgba(157, 80, 187, 0.5) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 0.5rem 1rem !important;
-  border-radius: 8px !important;
-  backdrop-filter: blur(5px);
+  background-color: rgba(30, 30, 30, 0.9) !important; /* Dark semi-transparent background */
+  border: 1px solid rgba(157, 80, 187, 0.5) !important; /* Purple border with transparency */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+  padding: 0.5rem 1rem !important; /* Padding */
+  border-radius: 8px !important; /* Rounded corners */
+  backdrop-filter: blur(5px); /* Apply backdrop blur */
+  /* Note: Missing display/alignment properties, likely inherited or applied elsewhere */
 }
 
+/* Override for buttons within the generic 'quantity-selector' */
 .quantity-btn {
-  width: 32px !important;
-  height: 32px !important;
-  border-color: rgba(157, 80, 187, 0.7) !important;
-  transition: all 0.2s ease;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  width: 32px !important; /* Set width */
+  height: 32px !important; /* Set height */
+  border-color: rgba(157, 80, 187, 0.7) !important; /* Purple border */
+  transition: all 0.2s ease; /* Smooth transition */
+  display: flex !important; /* Use flexbox to center content */
+  align-items: center !important; /* Center vertically */
+  justify-content: center !important; /* Center horizontally */
   line-height: 0 !important; /* Remove extra line height */
-  padding: 0 !important;
+  padding: 0 !important; /* Remove default padding */
+  /* Note: Missing background/color properties, likely inherited or applied elsewhere */
 }
 
+/* Hover effect for generic quantity buttons (when not disabled) */
 .quantity-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background-color: rgba(157, 80, 187, 0.3) !important;
-  border-color: rgba(157, 80, 187, 1) !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px); /* Lift the button */
+  background-color: rgba(157, 80, 187, 0.3) !important; /* Semi-transparent purple background */
+  border-color: rgba(157, 80, 187, 1) !important; /* Solid purple border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
 }
 
+/* Styling for disabled generic quantity buttons (redundant if .modern-quantity-btn:disabled exists) */
+.quantity-btn:disabled {
+  opacity: 0.5; /* Reduce opacity */
+  cursor: not-allowed; /* Indicate not clickable */
+}
+
+/* Styling for the quantity display number in the generic selector */
 .quantity-display {
-  font-weight: 600;
-  min-width: 30px;
+  font-weight: 600; /* Semi-bold font weight */
+  min-width: 30px; /* Ensure minimum width */
+  /* Note: Missing font size, text alignment, color properties */
 }
 
-/* ===== TABS STYLING ===== */
-.custom-tabs {
-  border-bottom: none;
-}
+/* --- Improved Counter Styles --- */
 
-.custom-tabs .nav-link {
-  color: rgba(255, 255, 255, 0.6);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  margin: 0 0.5rem;
-  font-weight: 600;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-}
-
-.custom-tabs .nav-link:hover {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.custom-tabs .nav-link.active {
-  color: white;
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  box-shadow: 0 5px 15px rgba(110, 72, 170, 0.4);
-}
-
-/* ===== ANIMATION CLASSES ===== */
-.fade-in-delay {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
-}
-
-.fade-in-delay.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-in {
-  opacity: 0;
-  transform: translateX(-50px);
-  transition: opacity 1s ease, transform 1s ease;
-}
-
-.slide-in.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Complete Order Button */
-.order-complete-btn {
-  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
-  border: none;
-  padding: 0.75rem 2.5rem;
-  font-weight: 600;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4);
-  transition: all 0.3s ease;
-  margin-top: 2rem;
-}
-
-.order-complete-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 7px 15px rgba(110, 72, 170, 0.6);
-}
-
-/* ===== RESPONSIVE STYLING ===== */
-@media (max-width: 992px) {
-  .section-title {
-    font-size: 2.5rem;
-  }
-  
-  .card-title {
-    font-size: 1.75rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2.2rem;
-  }
-  
-  .section-subtitle {
-    font-size: 1.1rem;
-  }
-  
-  .modern-card {
-    height: 350px;
-  }
-  
-  .custom-tabs .nav-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .section-title {
-    font-size: 1.8rem;
-  }
-  
-  .modern-card {
-    height: 300px;
-  }
-  
-  .card-title {
-    font-size: 1.5rem;
-  }
-  
-  .quantity-selector {
-    padding: 0.25rem 0.75rem;
-  }
-  
-  .quantity-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-  }
-  
-  .quantity-display {
-    margin: 0 0.75rem;
-    font-size: 1rem;
-  }
-}
-
-/* ===== GRID LAYOUT STYLING ===== */
-.card-grid {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.card-grid.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.card-grid .col {
-  transition: transform 0.5s ease;
-}
-
-/* Adjust card height for grid view */
-.card-grid .modern-card {
-  height: 280px;
-  margin-bottom: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-@media (max-width: 992px) {
-  .card-grid .modern-card {
-    height: 250px;
-  }
-}
-
-@media (max-width: 768px) {
-  .card-grid .modern-card {
-    height: 220px;
-  }
-  
-  .card-grid .card-title {
-    font-size: 1.5rem;
-  }
-}
-
-/* Staggered animation for cards */
-.card-grid .col:nth-child(1) {
-  transition-delay: 0.1s;
-}
-
-.card-grid .col:nth-child(2) {
-  transition-delay: 0.2s;
-}
-
-.card-grid .col:nth-child(3) {
-  transition-delay: 0.3s;
-}
-
-.card-grid .col:nth-child(4) {
-  transition-delay: 0.4s;
-}
-
-/* Card hover effect */
-.card-grid .modern-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-  z-index: 1;
-}
-
-/* Adjust card content for grid view */
-.card-grid .card-content {
-  margin-bottom: 1rem;
-}
-
-.card-grid .card-title {
-  font-size: 1.8rem;
-  margin-bottom: 0.25rem;
-}
-
-/* Adjust quantity selector for grid */
-.card-grid .quantity-selector {
-  margin-top: auto;
-  align-self: flex-end;
-}
-
-/* ===== IMPROVED COUNTER STYLING ===== */
+/* Styling for an 'improved' counter component */
 .improved-counter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(22, 22, 22, 0.8);
-  border-radius: 50px;
-  padding: 0.3rem;
-  margin: 0 auto;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(157, 80, 187, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  display: flex; /* Arrange buttons and display in a row */
+  align-items: center; /* Align items vertically */
+  justify-content: center; /* Center horizontally */
+  background: rgba(22, 22, 22, 0.8); /* Darker semi-transparent background */
+  border-radius: 50px; /* Pill shape */
+  padding: 0.3rem; /* Padding */
+  margin: 0 auto; /* Center horizontally */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Add shadow */
+  border: 1px solid rgba(157, 80, 187, 0.6); /* Purple border with transparency */
+  backdrop-filter: blur(8px); /* Apply backdrop blur */
+  -webkit-backdrop-filter: blur(8px); /* Vendor prefix */
   z-index: 10; /* Ensure it's above other elements */
+  position: relative; /* Establish stacking context for children */
 }
 
+/* Styling for buttons within the improved counter */
 .counter-btn {
   width: 42px !important; /* Increased size for better clickability */
   height: 42px !important; /* Increased size for better clickability */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50% !important;
-  font-size: 1.5rem;
-  font-weight: 600;
-  padding: 0 !important;
-  line-height: 0 !important; /* Adjusted to 0 to remove extra space */
-  background: transparent !important;
-  border: 2px solid rgba(157, 80, 187, 0.8) !important;
-  color: white !important;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  margin: 0 0.1rem;
-  cursor: pointer !important;
+  display: flex; /* Use flexbox to center content */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  border-radius: 50% !important; /* Make it a circle */
+  font-size: 1.5rem; /* Set font size for +/- */
+  font-weight: 600; /* Semi-bold font weight */
+  padding: 0 !important; /* Remove default padding */
+  line-height: 0 !important; /* Remove extra line height */
+  background: transparent !important; /* Transparent background */
+  border: 2px solid rgba(157, 80, 187, 0.8) !important; /* Purple border */
+  color: white !important; /* White text color */
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; /* Smooth transition with a bounce effect */
+  margin: 0 0.1rem; /* Small horizontal margin */
+  cursor: pointer !important; /* Indicate clickable */
   z-index: 15; /* Higher z-index to ensure clickability */
   position: relative; /* Establish stacking context */
 }
 
+/* Hover effect for improved counter buttons (when not disabled) */
 .counter-btn:hover:not(:disabled) {
-  transform: scale(1.1);
-  background: rgba(157, 80, 187, 0.25) !important;
-  border-color: rgba(157, 80, 187, 1) !important;
-  box-shadow: 0 0 10px rgba(157, 80, 187, 0.5);
+  transform: scale(1.1); /* Slightly enlarge the button */
+  background: rgba(157, 80, 187, 0.25) !important; /* Semi-transparent purple background */
+  border-color: rgba(157, 80, 187, 1) !important; /* Solid purple border */
+  box-shadow: 0 0 10px rgba(157, 80, 187, 0.5); /* Add a glowing shadow */
 }
 
+/* Active (click) effect for improved counter buttons (when not disabled) */
 .counter-btn:active:not(:disabled) {
-  transform: scale(0.95);
+  transform: scale(0.95); /* Slightly shrink on click */
 }
 
+/* Styling for disabled improved counter buttons */
 .counter-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  opacity: 0.4; /* Reduce opacity */
+  cursor: not-allowed; /* Indicate not clickable */
 }
 
+/* Specific hover color for the decrement button */
 .counter-btn.decrement:not(:disabled):hover {
-  background: rgba(239, 68, 68, 0.2) !important;
-  border-color: rgba(239, 68, 68, 0.8) !important;
+  background: rgba(239, 68, 68, 0.2) !important; /* Semi-transparent red background */
+  border-color: rgba(239, 68, 68, 0.8) !important; /* Red border */
 }
 
+/* Specific hover color for the increment button */
 .counter-btn.increment:not(:disabled):hover {
-  background: rgba(16, 185, 129, 0.2) !important;
-  border-color: rgba(16, 185, 129, 0.8) !important;
+  background: rgba(16, 185, 129, 0.2) !important; /* Semi-transparent green background */
+  border-color: rgba(16, 185, 129, 0.8) !important; /* Green border */
 }
 
+/* Styling for the quantity display number in the improved counter */
 .counter-display {
-  min-width: 32px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  text-align: center;
-  color: white;
-  padding: 0 0.5rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  min-width: 32px; /* Ensure minimum width */
+  font-size: 1.25rem; /* Set font size */
+  font-weight: 700; /* Bold font weight */
+  text-align: center; /* Center the number */
+  color: white; /* White text color */
+  padding: 0 0.5rem; /* Horizontal padding */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Add text shadow */
 }
 
-/* Styling for the bowl size selector */
+/* ===== MODERN BUTTON STYLES ===== */
+
+/* Generic styling for 'modern' buttons (potentially used elsewhere) */
+.modern-btn {
+  border-radius: 8px !important; /* Rounded corners, !important to override */
+  padding: 0.6rem 1rem; /* Padding */
+  font-weight: 500; /* Medium font weight */
+  transition: all 0.3s ease; /* Smooth transition */
+  border-width: 2px !important; /* Set border width, !important to override */
+}
+
+/* Hover effect for generic modern buttons */
+.modern-btn:hover {
+  transform: translateY(-2px); /* Lift the button slightly */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+/* ===== TABS STYLES ===== */
+
+/* Styling for custom tabs container */
+.custom-tabs {
+  border-bottom: none; /* Remove default bottom border */
+}
+
+/* Styling for individual tab links */
+.custom-tabs .nav-link {
+  color: rgba(255, 255, 255, 0.6); /* Light text color with transparency */
+  border: none; /* Remove default border */
+  padding: 0.75rem 1.5rem; /* Padding */
+  margin: 0 0.5rem; /* Horizontal margin */
+  font-weight: 600; /* Semi-bold font weight */
+  border-radius: 50px; /* Pill shape */
+  transition: all 0.3s ease; /* Smooth transition */
+  background-color: transparent; /* Ensure transparent background by default */
+}
+
+/* Hover effect for tab links */
+.custom-tabs .nav-link:hover {
+  color: rgba(255, 255, 255, 0.9); /* Make text less transparent on hover */
+}
+
+/* Styling for the active tab link */
+.custom-tabs .nav-link.active {
+  color: white; /* Solid white text color */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient background */
+  box-shadow: 0 5px 15px rgba(110, 72, 170, 0.4); /* Add shadow */
+  /* Remove default active border */
+  border-color: transparent !important;
+}
+
+/* ===== ANIMATION CLASSES ===== */
+
+/* Fade-in animation with a delay */
+.fade-in-delay {
+  opacity: 0; /* Start invisible */
+  transform: translateY(30px); /* Start slightly below final position */
+  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s; /* Smooth transition with a 0.3s delay */
+}
+
+/* State for fade-in-delay when visible */
+.fade-in-delay.visible {
+  opacity: 1; /* Become fully visible */
+  transform: translateY(0); /* Move to final position */
+}
+
+/* Slide-in animation from the left */
+.slide-in {
+  opacity: 0; /* Start invisible */
+  transform: translateX(-50px); /* Start off to the left */
+  transition: opacity 1s ease, transform 1s ease; /* Smooth transition */
+}
+
+/* State for slide-in when visible */
+.slide-in.visible {
+  opacity: 1; /* Become fully visible */
+  transform: translateX(0); /* Move to final position */
+}
+
+/* Basic fade-in animation */
+.fade-in {
+  opacity: 0; /* Start invisible */
+  transform: translateY(30px); /* Start slightly below final position */
+  transition: opacity 1s ease, transform 1s ease; /* Smooth transition without delay */
+}
+
+/* State for fade-in when visible */
+.fade-in.visible {
+  opacity: 1; /* Become fully visible */
+  transform: translateY(0); /* Move to final position */
+}
+
+
+/* Z-index utility class */
+.z-2 {
+  z-index: 2; /* Set z-index to 2 */
+}
+
+/* Styling for a 'Complete Order' button */
+.order-complete-btn {
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%); /* Gradient background */
+  border: none; /* Remove default border */
+  padding: 0.75rem 2.5rem; /* Padding */
+  font-weight: 600; /* Semi-bold font weight */
+  border-radius: 50px; /* Pill shape */
+  box-shadow: 0 4px 15px rgba(110, 72, 170, 0.4); /* Add shadow */
+  transition: all 0.3s ease; /* Smooth transition */
+  margin-top: 2rem; /* Space above the button */
+}
+
+/* Hover effect for the 'Complete Order' button */
+.order-complete-btn:hover {
+  transform: translateY(-3px); /* Lift the button slightly */
+  box-shadow: 0 7px 15px rgba(110, 72, 170, 0.6); /* Enhance shadow */
+}
+
+
+/* ===== RESPONSIVE STYLING (General) ===== */
+
+/* Adjustments for larger screens (e.g., Laptops, Desktops) */
+@media (max-width: 992px) {
+  .section-title {
+    font-size: 2.5rem; /* Reduce section title size */
+  }
+
+  .card-title {
+    font-size: 1.75rem; /* Reduce card title size */
+  }
+}
+
+/* Adjustments for medium screens (e.g., Tablets) */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2.2rem; /* Further reduce section title size */
+  }
+
+  .section-subtitle {
+    font-size: 1.1rem; /* Reduce section subtitle size */
+  }
+
+  .modern-card {
+    height: 350px; /* Reduce modern card height */
+  }
+
+  .custom-tabs .nav-link {
+    padding: 0.5rem 1rem; /* Reduce tab link padding */
+    font-size: 0.9rem; /* Reduce tab link font size */
+  }
+}
+
+/* Adjustments for small screens (e.g., Mobile phones) */
+@media (max-width: 576px) {
+  .section-title {
+    font-size: 1.8rem; /* Further reduce section title size */
+  }
+
+  .modern-card {
+    height: 300px; /* Further reduce modern card height */
+  }
+
+  .card-title {
+    font-size: 1.5rem; /* Further reduce card title size */
+  }
+
+  /* Adjustments for the generic quantity selector on small screens */
+  .quantity-selector {
+    padding: 0.25rem 0.75rem; /* Reduce padding */
+  }
+
+  .quantity-btn {
+    width: 30px !important; /* Reduce button size */
+    height: 30px !important; /* Reduce button size */
+    font-size: 1.2rem !important; /* Reduce +/- symbol size */
+  }
+
+  .quantity-display {
+    margin: 0 0.75rem; /* Adjust margin */
+    font-size: 1rem; /* Reduce number font size */
+  }
+}
+
+/* ===== GRID LAYOUT STYLING ===== */
+
+/* Container for a grid of cards, with initial animation state */
+.card-grid {
+  opacity: 0; /* Start invisible */
+  transform: translateY(30px); /* Start slightly below final position */
+  transition: opacity 0.8s ease, transform 0.8s ease; /* Smooth transition */
+}
+
+/* State for the card grid when visible */
+.card-grid.visible {
+  opacity: 1; /* Become fully visible */
+  transform: translateY(0); /* Move to final position */
+}
+
+/* Add transition to individual grid columns for staggered animation */
+.card-grid .col {
+  transition: transform 0.5s ease; /* Smooth transition for lifting effect */
+}
+
+/* Adjust the height of modern cards specifically within the grid layout */
+.card-grid .modern-card {
+  height: 350px; /* Increased height to fit content and buttons */
+  margin-bottom: 2rem; /* Add bottom margin for spacing */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* Responsive height adjustments for cards in the grid */
+@media (max-width: 992px) {
+  .card-grid .modern-card {
+    height: 320px; /* Increased height on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .card-grid .modern-card {
+    height: 300px; /* Increased height on small screens */
+  }
+
+  .card-grid .card-title {
+    font-size: 1.5rem; /* Reduce card title size */
+  }
+}
+
+/* Staggered animation delays for columns in the grid */
+.card-grid .col:nth-child(1) {
+  transition-delay: 0.1s; /* Delay for the first column */
+}
+
+.card-grid .col:nth-child(2) {
+  transition-delay: 0.2s; /* Delay for the second column */
+}
+
+.card-grid .col:nth-child(3) {
+  transition-delay: 0.3s; /* Delay for the third column */
+}
+
+.card-grid .col:nth-child(4) {
+  transition-delay: 0.4s; /* Delay for the fourth column */
+}
+/* Note: Add more :nth-child rules if the grid has more columns */
+
+
+/* Hover effect for cards within the grid */
+.card-grid .modern-card:hover {
+  transform: translateY(-8px); /* Lift the card more than the default hover */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4); /* Enhance shadow */
+  z-index: 1; /* Bring hovered card slightly forward */
+}
+
+/* Adjust padding/margin for card content within the grid */
+.card-grid .card-content {
+  margin-bottom: 1rem; /* Reduce bottom margin */
+  padding: 1rem; /* Adjust padding */
+}
+
+/* Adjust title size for cards within the grid */
+.card-grid .card-title {
+  font-size: 1.8rem; /* Adjust title size */
+  margin-bottom: 0.25rem; /* Reduce bottom margin */
+}
+
+/* Adjust positioning of the quantity selector within the grid card */
+.card-grid .quantity-selector {
+  margin-top: auto; /* Push the selector to the bottom of the flex container */
+  align-self: flex-end; /* Align the selector to the end of the cross axis */
+  margin-bottom: 1rem; /* Add bottom margin to prevent cutting off */
+}
+
+/* Ensure card buttons have enough space */
+.card-grid .card-button {
+  margin-bottom: 1rem; /* Add bottom margin to prevent cutting off */
+}
+
+/* ===== BOWL SIZE SELECTION STYLES ===== */
+
+/* Styling for a card specifically when it is selected as a bowl size */
 .selected-size {
-  border-color: rgba(157, 80, 187, 0.8) !important;
-  box-shadow: 0 0 20px rgba(157, 80, 187, 0.4) !important;
+  border-color: rgba(157, 80, 187, 0.8) !important; /* Add a prominent purple border */
+  box-shadow: 0 0 20px rgba(157, 80, 187, 0.4) !important; /* Add a glowing purple shadow */
 }
 
-/* Bowl sizes section styling */
+/* General styling for the container holding bowl size cards */
 .bowl-sizes .card {
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
-  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important; /* Smooth transition with a slightly springy effect */
+  overflow: hidden; /* Hide overflowing content */
+  cursor: pointer; /* Change cursor to indicate clickable */
 }
 
+/* Style for bowl size selection buttons to prevent form submission */
+.bowl-sizes .size-select-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: block;
+  text-align: left; /* Align text to match card design */
+  position: relative;
+  z-index: 2; /* Ensure it's clickable above other elements */
+}
+
+/* Prevent focus outlines that might look bad with the card design */
+.bowl-sizes .size-select-btn:focus {
+  outline: none;
+}
+
+/* Hover effect for bowl size cards */
 .bowl-sizes .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px); /* Lift the card slightly */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+/* Quantity badge for showing number of selected ingredients */
+.quantity-badge {
+  position: absolute;
+  top: -5px; /* Positioned below the price tag */
+  left: -5px; /* Aligned to the right */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  font-size: 1rem;
+  z-index: 3; /* Ensure it's above other elements */
+}
+
+/* ===== Custom Ingredients Card Styles ===== */
+
+/* Specific styling for ingredients cards */
+.ingredients .card-grid .modern-card {
+  height: 420px !important; /* Fixed height specifically for ingredients cards */
+  margin-bottom: 2rem; /* Keep bottom margin for spacing */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Keep transition effects */
+}
+
+/* Ensure the buttons in ingredients cards have enough space */
+.ingredients .card-grid .d-flex.justify-content-between {
+  margin-bottom: 15px; /* Extra bottom margin to prevent button cutoff */
+}
+
+/* Maintain fixed height on different screen sizes */
+@media (max-width: 992px) {
+  .ingredients .card-grid .modern-card {
+    height: 420px !important; /* Keep consistent height on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .ingredients .card-grid .modern-card {
+    height: 420px !important; /* Keep consistent height on small screens */
+  }
 }

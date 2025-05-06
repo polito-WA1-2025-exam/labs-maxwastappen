@@ -1,23 +1,54 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import BowlBuilderPage from './pages/BowlBuilderPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderConfirmationPage from './pages/OrderConfirmationPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import MenuPage from './pages/MenuPage';
 import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Navigation from './components/Navigation.jsx';
-import Hero from './components/Hero.jsx';
-import Bases from './components/Bases.jsx';
-import Proteins from './components/Proteins.jsx';
-import Ingredients from './components/Ingredients.jsx';
-import Footer from './components/Footer.jsx';
-import OrderForm from './components/OrderForm.jsx';
-import { Container, Row, Col, Button, Card, ListGroup, Form, ButtonGroup } from 'react-bootstrap'; // Added Form and ButtonGroup for bowl size/quantity
 
-// Define data centrally
+/**
+ * @typedef {Object} Item
+ * @property {number} id - Unique identifier for the item.
+ * @property {string} name - Name of the item.
+ * @property {string} description - Description of the item.
+ * @property {number} price - Price of the item.
+ * @property {string} image - URL of the item's image.
+ */
+
+/**
+ * @typedef {Object} BowlSize
+ * @property {string} id - Unique identifier for the bowl size (e.g., 'regular', 'medium', 'large').
+ * @property {string} name - Name of the bowl size.
+ * @property {number} priceMultiplier - Multiplier to apply to the base price based on the bowl size.
+ */
+
+/**
+ * @typedef {Object} IngredientCategory
+ * @property {number} id - Unique identifier for the category.
+ * @property {string} category - Name of the category (e.g., 'Vegetables', 'Toppings', 'Dressings').
+ * @property {Item[]} items - Array of items within the category.
+ */
+
+/**
+ * @type {Item[]}
+ * Array of base options for the bowl.
+ */
 const baseOptions = [
     { id: 1, name: 'White Rice', description: 'Japanese short-grain white rice', price: 2.50, image: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?q=80&w=2070' },
     { id: 2, name: 'Brown Rice', description: 'Whole grain brown rice', price: 2.50, image: 'https://images.unsplash.com/photo-1557592722-a0a649c8c5c7?q=80&w=2070' },
     { id: 3, name: 'Mixed Greens', description: 'Fresh mixed salad greens', price: 3.00, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=2084' }
 ];
 
+/**
+ * @type {Item[]}
+ * Array of protein options for the bowl.
+ */
 const proteinOptions = [
     { id: 1, name: 'Tuna', description: 'Fresh tuna cubes', price: 4.50, image: 'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?q=80&w=2070' },
     { id: 2, name: 'Salmon', description: 'Norwegian salmon', price: 4.50, image: 'https://images.unsplash.com/photo-1526434426615-1abe81efcb0b?q=80&w=2070' },
@@ -25,13 +56,20 @@ const proteinOptions = [
     { id: 4, name: 'Tofu', description: 'Organic tofu', price: 3.00, image: 'https://images.unsplash.com/photo-1584948528512-fd980cd94361?q=80&w=1936' },
 ];
 
-// Add bowl size options with price multipliers
+/**
+ * @type {BowlSize[]}
+ * Array of bowl size options with price multipliers.
+ */
 const bowlSizes = [
     { id: 'regular', name: 'Regular', priceMultiplier: 1.0 },
     { id: 'medium', name: 'Medium', priceMultiplier: 1.3 },
     { id: 'large', name: 'Large', priceMultiplier: 1.5 }
 ];
 
+/**
+ * @type {IngredientCategory[]}
+ * Array of ingredient categories, each containing an array of items.
+ */
 const ingredientCategories = [
     {
         id: 1,
@@ -65,8 +103,12 @@ const ingredientCategories = [
     }
 ];
 
-// Helper to find item by ID
-const findItem = (id) => {
+/**
+ * Finds an item (base, protein, or ingredient) by its ID.
+ * @param {number} id - The ID of the item to find.
+ * @returns {Item | null} - The item object with an added 'type' property, or null if not found.
+ */
+export const findItem = (id) => {
     const base = baseOptions.find(b => b.id === id);
     if (base) return { ...base, type: 'Base' };
     const protein = proteinOptions.find(p => p.id === id);
@@ -78,149 +120,43 @@ const findItem = (id) => {
     return null;
 };
 
+/**
+ * Generates a unique key for a bowl based on its base, proteins, ingredients, and size.
+ * @param {Object} bowl - The bowl object containing base, proteins, and ingredients.
+ * @param {BowlSize} size - The size of the bowl.
+ * @returns {string} - A unique key for the bowl.
+ */
+export const getBowlKey = (bowl, size) => {
+    return `${bowl.base}-${JSON.stringify(bowl.proteins)}-${JSON.stringify(bowl.ingredients)}-${size.id}`;
+};
 
+/**
+ * Main App component that manages the application's state and routing.
+ * @returns {JSX.Element} - The rendered JSX element.
+ */
 function App() {
-  const [order, setOrder] = useState([]); // Array of bowl objects with amount field
-  const [bowlSize, setBowlSize] = useState(bowlSizes[0]); // Default to regular size
-  const [currentBowl, setCurrentBowl] = useState({
-    base: null, // id of selected base
-    proteins: {}, // { proteinId: quantity }
-    ingredients: {} // { ingredientId: quantity }
-  });
-  const [nextBowlId, setNextBowlId] = useState(1); // For unique bowl keys/ids in the order
-  // Add bowlQuantity state at the component level instead of inside the render function
-  const [bowlQuantity, setBowlQuantity] = useState(1);
+  /**
+   * @type {[Array, function]}
+   * @description order - Array of bowl objects with amount field
+   * @description setOrder - Function to update the order state
+  */
+  const [order, setOrder] = useState([]);
+  /**
+   * @type {[number, function]}
+   * @description nextBowlId - For unique bowl keys/ids in the order
+   * @description setNextBowlId - Function to update the nextBowlId state
+   */
+  const [nextBowlId, setNextBowlId] = useState(1);
 
-  // Create a separate component for size selection that comes before other sections
-  const BowlSizeSelector = () => {
-    const [isVisible, setIsVisible] = useState(false);
-    
-    useEffect(() => {
-      setIsVisible(true); // Show component with animation
-    }, []);
-    
-    return (
-      <div id="bowl-sizes" className="bowl-sizes section-content py-5">
-        <Container>
-          <Row className="mb-5">
-            <Col className="text-center">
-              <div className={`section-header fade-in ${isVisible ? 'visible' : ''}`}>
-                <h2 className="section-title">Select Bowl Size</h2>
-                <div className="section-divider"></div>
-                <p className="section-subtitle">Choose your perfect bowl size to start your meal</p>
-              </div>
-            </Col>
-          </Row>
-          
-          <Row className={`justify-content-center fade-in ${isVisible ? 'visible' : ''}`}>
-            <Col md={10} lg={8}>
-              <Card className="dark-bg mb-4">
-                <Card.Body className="py-4">
-                  <Card.Title className="mb-4 text-center">Bowl Size Options</Card.Title>
-                  <Row>
-                    {bowlSizes.map((size) => (
-                      <Col key={size.id} md={4} className="mb-3">
-                        <Card 
-                          className={`h-100 text-center size-selector-card ${bowlSize.id === size.id ? 'border border-primary border-3 selected-size' : ''}`}
-                          onClick={() => setBowlSize(size)}
-                          style={{ 
-                            cursor: 'pointer',
-                            background: bowlSize.id === size.id ? 'rgba(110, 72, 170, 0.3)' : 'rgba(30, 30, 30, 0.7)',
-                            transition: 'all 0.3s ease',
-                            minHeight: '200px', // Set minimum height
-                          }}
-                        >
-                          <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-                            <div style={{ 
-                              fontSize: size.id === 'regular' ? '3.5rem' : size.id === 'medium' ? '4rem' : '4.5rem',
-                              opacity: '0.8',
-                              marginBottom: '15px'
-                            }}>
-                              🍜
-                            </div>
-                            <Card.Title className="mb-2" style={{ color: 'white' }}>{size.name}</Card.Title>
-                            <Card.Text style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                              Price: ×{size.priceMultiplier.toFixed(1)}
-                            </Card.Text>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
-                  <div className="text-center mt-3" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                    <small>The selected size affects all ingredients quantity and price</small>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    );
-  };
-
-  const handleSelectBase = (baseId) => {
-    setCurrentBowl(prev => ({ ...prev, base: baseId }));
-  };
-
-  const handleSelectProtein = (proteinId) => {
-    setCurrentBowl(prev => {
-      const newProteins = { ...prev.proteins };
-      if (newProteins[proteinId]) {
-        // If protein is already selected, remove it
-        delete newProteins[proteinId];
-        return { ...prev, proteins: newProteins };
-      } else {
-        // Otherwise, add the new protein
-        return { ...prev, proteins: { ...newProteins, [proteinId]: 1 } };
-      }
-    });
-  };
-
-  const handleIngredientChange = (ingredientId, quantity) => {
-    setCurrentBowl(prev => {
-      const newIngredients = { ...prev.ingredients };
-      if (quantity > 0) {
-        newIngredients[ingredientId] = quantity;
-      } else {
-        delete newIngredients[ingredientId]; // Remove if quantity is 0
-      }
-      return { ...prev, ingredients: newIngredients };
-    });
-  };
-
-  const calculateBowlPrice = (bowl) => {
-    let price = 0;
-    if (bowl.base) {
-        const baseItem = findItem(bowl.base);
-        if (baseItem) price += baseItem.price;
-    }
-    Object.entries(bowl.proteins).forEach(([id, quantity]) => {
-        const proteinItem = findItem(parseInt(id)); // Ensure id is number
-        if (proteinItem) price += proteinItem.price * quantity;
-    });
-    Object.entries(bowl.ingredients).forEach(([id, quantity]) => {
-        const ingredientItem = findItem(parseInt(id)); // Ensure id is number
-        if (ingredientItem) price += ingredientItem.price * quantity;
-    });
-    price *= bowlSize.priceMultiplier; // Apply size multiplier
-    return price;
-  };
-
-  const resetCurrentBowl = () => {
-    setCurrentBowl({ base: null, proteins: {}, ingredients: {} });
-  };
-
-  const handleAddBowlToOrder = () => {
-    if (!currentBowl.base || Object.keys(currentBowl.proteins).length === 0) {
-        alert("Please select a base and a protein for your bowl.");
-        return;
-    }
-
-    const bowlPrice = calculateBowlPrice(currentBowl);
-    
+  /**
+   * Adds a bowl to the order. If the bowl already exists, it updates the amount. Otherwise, it adds a new bowl to the order.
+   * @param {Object} bowl - The bowl object containing base, proteins, and ingredients.
+   * @param {BowlSize} bowlSize - The size of the bowl.
+   * @param {number} bowlQuantity - The quantity of the bowl to add.
+   */
+  const handleAddBowlToOrder = (bowl, bowlSize, bowlQuantity) => {
     // Create a unique key for this bowl configuration
-    const bowlKey = getBowlKey(currentBowl, bowlSize);
+    const bowlKey = getBowlKey(bowl, bowlSize);
     
     // Check if this exact bowl combination already exists in the order
     const existingBowlIndex = order.findIndex(item => getBowlKey(item, item.size) === bowlKey);
@@ -239,25 +175,21 @@ function App() {
         // Otherwise add a new bowl with amount
         const newBowl = {
             id: nextBowlId,
-            ...currentBowl,
+            ...bowl,
             size: bowlSize, // Include the bowl size in the order
-            price: bowlPrice,
             amount: bowlQuantity // Initial amount from the quantity selector
         };
         
         setOrder(prevOrder => [...prevOrder, newBowl]);
         setNextBowlId(prevId => prevId + 1); // Increment ID for the next bowl
     }
-    
-    resetCurrentBowl(); // Reset selections for the next bowl
-    setBowlQuantity(1);  // Reset quantity to 1
   };
 
-  // Helper function to create a unique key for a bowl based on its contents
-  const getBowlKey = (bowl, size) => {
-    return `${bowl.base}-${JSON.stringify(bowl.proteins)}-${JSON.stringify(bowl.ingredients)}-${size.id}`;
-  };
-
+  /**
+   * Removes a bowl from the order by decreasing its amount. If the amount becomes 0 or less, the bowl is removed completely.
+   * @param {number} bowlIdToRemove - The ID of the bowl to remove.
+   * @param {number} [decreaseBy=1] - The amount to decrease the bowl by. Defaults to 1.
+   */
   const handleRemoveBowl = (bowlIdToRemove, decreaseBy = 1) => {
     setOrder(prevOrder => {
         return prevOrder.map(bowl => {
@@ -273,168 +205,65 @@ function App() {
     });
   };
 
+  /**
+   * Completely removes a bowl from the order.
+   * @param {number} bowlIdToRemove - The ID of the bowl to remove.
+   */
   const handleRemoveBowlCompletely = (bowlIdToRemove) => {
     setOrder(prevOrder => prevOrder.filter(bowl => bowl.id !== bowlIdToRemove));
   };
 
-  // --- Bowl Builder Section ---
-  const renderCurrentBowlSummary = () => {
-    const base = currentBowl.base ? findItem(currentBowl.base) : null;
-    const proteinItems = Object.entries(currentBowl.proteins).map(([id, quantity]) => {
-        const item = findItem(parseInt(id));
-        return item ? { ...item, quantity } : null;
-    }).filter(item => item !== null);
-    const ingredientsList = Object.entries(currentBowl.ingredients).map(([id, quantity]) => {
-        const item = findItem(parseInt(id));
-        return item ? { ...item, quantity } : null;
-    }).filter(item => item !== null);
-
-    const currentPrice = calculateBowlPrice(currentBowl);
-    
-    // Handle quantity change using the component-level state
-    const handleQuantityChange = (amount) => {
-      const newQuantity = Math.max(1, bowlQuantity + amount); // Minimum quantity is 1
-      setBowlQuantity(newQuantity);
-    };
-
-    return (
-        <Card className="dark-bg mb-4">
-            <Card.Body>
-                <Card.Title className="mb-3">Your Next Bowl</Card.Title>
-                
-                <ListGroup variant="flush">
-                    {base && <ListGroup.Item className="dark-bg d-flex justify-content-between"><span>Base: {base.name}</span> <span>€{base.price.toFixed(2)}</span></ListGroup.Item>}
-                    {proteinItems.length > 0 && <ListGroup.Item className="dark-bg d-flex justify-content-between"><span>Protein{proteinItems.length > 1 ? 's' : ''}: {proteinItems.map(p => `${p.name}${p.quantity > 1 ? ` ×${p.quantity}` : ''}`).join(', ')}</span> <span>€{proteinItems.reduce((total, p) => total + (p.price * p.quantity), 0).toFixed(2)}</span></ListGroup.Item>}
-                    {ingredientsList.length > 0 && <ListGroup.Item className="dark-bg pt-2 pb-0"><span className="fw-bold">Ingredients:</span></ListGroup.Item>}
-                    {ingredientsList.map(ing => (
-                         <ListGroup.Item key={ing.id} className="dark-bg d-flex justify-content-between ps-4">
-                            <span>{ing.name} x {ing.quantity}</span>
-                            <span>€{(ing.price * ing.quantity).toFixed(2)}</span>
-                        </ListGroup.Item>
-                    ))}
-                     <ListGroup.Item className="dark-bg fw-bold d-flex justify-content-between mt-2">
-                        <span>Bowl Size:</span>
-                        <span>{bowlSize.name} (×{bowlSize.priceMultiplier})</span>
-                    </ListGroup.Item>
-                     <ListGroup.Item className="dark-bg fw-bold d-flex justify-content-between">
-                        <span>Price per Bowl:</span>
-                        <span>€{currentPrice.toFixed(2)}</span>
-                    </ListGroup.Item>
-                </ListGroup>
-                
-                {/* Bowl Quantity Selector */}
-                <div className="mt-3 mb-3">
-                    <label className="d-block mb-2 fw-bold">Quantity:</label>
-                    <div className="modern-quantity-selector d-flex align-items-center">
-                        <Button 
-                            variant="outline-light" 
-                            className="modern-quantity-btn"
-                            onClick={() => handleQuantityChange(-1)}
-                            disabled={bowlQuantity <= 1}
-                        >
-                            −
-                        </Button>
-                        <span className="modern-quantity-display">{bowlQuantity}</span>
-                        <Button 
-                            variant="outline-light" 
-                            className="modern-quantity-btn"
-                            onClick={() => handleQuantityChange(1)}
-                        >
-                            +
-                        </Button>
-                        <span className="ms-3 fw-bold">Total: €{(currentPrice * bowlQuantity).toFixed(2)}</span>
-                    </div>
-                </div>
-                
-                <Button
-                    variant="primary"
-                    className="w-100 mt-3 card-button"
-                    onClick={() => {
-                      // Add the bowl with the correct quantity instead of calling handleAddBowlToOrder multiple times
-                      handleAddBowlToOrder();
-                    }}
-                    disabled={!currentBowl.base || Object.keys(currentBowl.proteins).length === 0}
-                >
-                    Add {bowlQuantity > 1 ? `${bowlQuantity} Bowls` : 'Bowl'} to Order
-                </Button>
-            </Card.Body>
-        </Card>
-    );
-  };
-  // --- End Bowl Builder Section ---
-
-
   return (
-    <div className="App dark-mode">
-      <Navigation />
-      <main>
-        <section className="section-darker"><Hero /></section>
-        
-        {/* Add Bowl Size Selection as the first interactive section */}
-        <section className="section-lighter">
-            <BowlSizeSelector />
-        </section>
-        
-        <section className="section-darker">
-            <Bases
-                baseOptions={baseOptions}
-                selectedBaseId={currentBowl.base}
-                onSelectBase={handleSelectBase}
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route 
+          path="/build" 
+          element={
+            <BowlBuilderPage 
+              baseOptions={baseOptions}
+              proteinOptions={proteinOptions}
+              bowlSizes={bowlSizes}
+              ingredientCategories={ingredientCategories}
+              onAddBowlToOrder={handleAddBowlToOrder}
+              findItem={findItem}
             />
-        </section>
-        <section className="section-lighter">
-            <Proteins
-                proteinOptions={proteinOptions}
-                selectedProteins={currentBowl.proteins}
-                bowlSize={bowlSize}
-                onProteinChange={(proteinId, newCount) => {
-                  setCurrentBowl(prev => {
-                    const newProteins = { ...prev.proteins };
-                    
-                    if (newCount > 0) {
-                      newProteins[proteinId] = newCount;
-                    } else {
-                      delete newProteins[proteinId];
-                    }
-                    
-                    return { 
-                      ...prev,
-                      proteins: newProteins
-                    };
-                  });
-                }}
+          } 
+        />
+        <Route 
+          path="/cart" 
+          element={
+            <CartPage 
+              order={order}
+              onRemoveBowl={handleRemoveBowl}
+              onRemoveBowlCompletely={handleRemoveBowlCompletely}
+              findItem={findItem}
             />
-        </section>
-        <section className="section-darker">
-            <Ingredients
-                ingredientCategories={ingredientCategories}
-                selectedIngredients={currentBowl.ingredients}
-                onIngredientChange={handleIngredientChange}
+          } 
+        />
+        <Route 
+          path="/checkout" 
+          element={
+            <CheckoutPage 
+              order={order}
+              findItem={findItem}
             />
-        </section>
-        {/* Bowl Builder Section */}
-        <section className="section-lighter py-5">
-            <Container>
-                <Row className="justify-content-center">
-                     <Col md={8} lg={6}>
-                        {renderCurrentBowlSummary()}
-                    </Col>
-                </Row>
-            </Container>
-        </section>
-        {/* End Bowl Builder Section */}
-        <section className="section-darker"> {/* Changed section class for contrast */}
-            <OrderForm
-                order={order} // Pass the array of bowls with amount
-                onRemoveBowl={handleRemoveBowl} // Pass the remove handler (decreases by 1)
-                onRemoveBowlCompletely={handleRemoveBowlCompletely} // Pass handler to remove entire bowl
-                findItem={findItem} // Pass helper to find item details
-                // onSubmit will be handled inside OrderForm for customer details
+          } 
+        />
+        <Route 
+          path="/confirmation" 
+          element={
+            <OrderConfirmationPage 
+              order={order}
+              findItem={findItem}
             />
-        </section>
-      </main>
-      <Footer />
-    </div>
+          } 
+        />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/menu" element={<MenuPage />} />
+      </Routes>
+    </Router>
   );
 }
 
