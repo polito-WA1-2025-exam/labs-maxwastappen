@@ -41,6 +41,33 @@ function Proteins({ proteinOptions = [], selectedProteins = {}, onSelectProtein 
     // reduce sums these quantities. For this component, quantities are implicitly 1 when selected.
     const totalProteinsSelected = Object.values(selectedProteins).reduce((sum, count) => sum + count, 0);
 
+    /**
+     * @function increaseProteinQuantity
+     * @description Increases the quantity of a specific protein by 1 if total proteins limit is not exceeded.
+     * @param {number} id - The ID of the protein to increase.
+     * @param {number} newQuantity - Optional specific quantity to set (used by the Remove button)
+     */
+    const increaseProteinQuantity = (id, newQuantity) => {
+        // If newQuantity is provided (0 for remove button), use it directly
+        if (newQuantity !== undefined) {
+            onSelectProtein(id, newQuantity);
+            return;
+        }
+        
+        // Get the current quantity for this protein
+        const currentQuantity = selectedProteins[id] || 0;
+        
+        // Check if adding another protein would exceed the maximum
+        if (totalProteinsSelected >= maxProteins && currentQuantity === 0) {
+            // Show alert if trying to add a new protein when max is reached
+            setShowMaxAlert(true);
+            return;
+        }
+        
+        // Call the parent handler with the protein ID and the new quantity
+        onSelectProtein(id, currentQuantity + 1);
+    };
+
     // Effect hook to handle the scroll event and trigger the animation
     useEffect(() => {
         /**
@@ -157,7 +184,7 @@ function Proteins({ proteinOptions = [], selectedProteins = {}, onSelectProtein 
                                         // modern-card: Apply custom card styling
                                         // h-100: Make cards equal height
                                         // Conditional classes for the border/highlight based on selection
-                                        className={`modern-card h-100 ${isSelected ? 'border border-primary border-3' : ''}`}
+                                        className={`modern-card h-100 ${isSelected ? 'border border-primary border-3 selected-size' : ''}`}
                                         // Call onSelectProtein when the card is clicked
                                         // This handles both selection and deselection based on the proteinId
                                         onClick={() => onSelectProtein(protein.id)}
@@ -171,33 +198,58 @@ function Proteins({ proteinOptions = [], selectedProteins = {}, onSelectProtein 
                                         />
                                         {/* Gradient overlay for the image */}
                                         <div className="card-gradient-overlay"></div>
+                                        
+                                        {/* Price tag now positioned via CSS in top right */}
+                                        <p className="card-price">€{protein.price.toFixed(2)}</p>
+                                        
                                         {/* Card content overlay, positioned over the image */}
-                                        <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
-                                            {/* card-content: Apply custom styling for the content area */}
+                                        <Card.ImgOverlay 
+                                            className="d-flex flex-column justify-content-between p-4"
+                                            onClick={() => increaseProteinQuantity(protein.id)} // Increment quantity when card is clicked
+                                        >
                                             <div className="card-content">
                                                 {/* card-title: Styles the title */}
                                                 <h3 className="card-title">{protein.name}</h3>
                                                 {/* card-description: Styles the description */}
                                                 <p className="card-description">{protein.description}</p>
-                                                {/* card-price: Styles the price, formatted to 2 decimal places */}
-                                                <p className="card-price">€{protein.price.toFixed(2)}</p>
+                                                {/* Removed price tag from here */}
+                                                {/* Show quantity badge if protein is selected */}
+                                                {selectedProteins[protein.id] > 0 && (
+                                                    <div className="quantity-badge">
+                                                        ×{selectedProteins[protein.id]}
+                                                    </div>
+                                                )}
                                             </div>
-
-                                            {/* Select Protein Button */}
-                                            <Button
-                                                variant="primary" // Primary button style
-                                                className="card-button align-self-start mt-4" // Custom button class and margin
-                                                // Stop click propagation from the button to prevent triggering the card's onClick handler
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onSelectProtein(protein.id); // Call the onSelectProtein handler with the protein ID
-                                                }}
-                                                // Disable the button if the maximum proteins are already selected AND this protein is NOT already selected
-                                                disabled={totalProteinsSelected >= maxProteins && !isSelected}
-                                            >
-                                                {/* Button text changes based on whether this protein is selected */}
-                                                {isSelected ? 'Selected' : 'Select Protein'}
-                                            </Button>
+                                            
+                                            {/* Modified button layout - consistent width and centered text */}
+                                            <div className="d-flex justify-content-between w-100 mb-2">
+                                                <Button
+                                                    variant="primary"
+                                                    className="card-button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        increaseProteinQuantity(protein.id);
+                                                    }}
+                                                    disabled={totalProteinsSelected >= maxProteins && !selectedProteins[protein.id]}
+                                                >
+                                                    {isSelected ? 'Add More' : 'Select'}
+                                                </Button>
+                                                
+                                                {isSelected ? (
+                                                    <Button
+                                                        variant="outline-danger"
+                                                        className="card-button-danger"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onSelectProtein(protein.id, 0);
+                                                        }}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                ) : (
+                                                    <div></div>
+                                                )}
+                                            </div>
                                         </Card.ImgOverlay>
                                     </Card>
                                 </Col>

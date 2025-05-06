@@ -67,23 +67,34 @@ function BowlBuilderPage({ baseOptions = [], proteinOptions = [], bowlSizes = []
   /**
    * @function handleSelectProtein
    * @description Handles the selection/deselection of a protein.
-   * Since only one protein is typically selected in a traditional poke bowl,
-   * this function toggles selection. If multiple were allowed, the logic would differ.
-   * @param {number} proteinId - The ID of the protein to toggle.
+   * Supports adding multiple quantities of the same protein.
+   * @param {number} proteinId - The ID of the protein to toggle or update.
+   * @param {number} quantity - Optional quantity to set (if provided).
    */
-  const handleSelectProtein = (proteinId) => {
+  const handleSelectProtein = (proteinId, quantity) => {
     setCurrentBowl(prev => {
       const newProteins = { ...prev.proteins };
-      if (newProteins[proteinId]) {
-        // If protein is already selected, remove it
-        delete newProteins[proteinId];
+      
+      // If a specific quantity is provided, use it
+      if (quantity !== undefined) {
+        if (quantity <= 0) {
+          // If quantity is 0 or less, remove the protein
+          delete newProteins[proteinId];
+        } else {
+          // Otherwise set to the specified quantity
+          newProteins[proteinId] = quantity;
+        }
       } else {
-        // Otherwise, add the new protein with quantity 1 (assuming 1 serving per protein type)
-        // To allow multiple selections, you might modify this to add to the existing set.
-        // To enforce single selection, you'd replace the whole proteins object:
-        // return { ...prev, proteins: { [proteinId]: 1 } };
-        newProteins[proteinId] = 1; // Add the protein with quantity 1
+        // Legacy toggle behavior if no quantity is provided
+        if (newProteins[proteinId]) {
+          // If protein is already selected, remove it
+          delete newProteins[proteinId];
+        } else {
+          // Otherwise, add the new protein with quantity 1
+          newProteins[proteinId] = 1;
+        }
       }
+      
       return { ...prev, proteins: newProteins };
     });
   };
@@ -162,16 +173,15 @@ function BowlBuilderPage({ baseOptions = [], proteinOptions = [], bowlSizes = []
     // Calculate the price for the bowl currently being added
     const bowlPrice = calculateBowlPrice(currentBowl);
 
-    // Create a complete bowl object including price, size, and quantity for the order
+    // Create a complete bowl object including price for the order
     const bowlToAdd = {
       ...currentBowl, // Include base, proteins, ingredients IDs and quantities
       price: bowlPrice, // Add the calculated price per bowl
-      size: bowlSize, // Add the selected size object
-      quantity: bowlQuantity, // Add the selected quantity for this bowl
     };
 
     // Call the parent handler function to add the bowl to the global order state
-    onAddBowlToOrder(bowlToAdd);
+    // Pass the bowl object, size object, and quantity as separate parameters
+    onAddBowlToOrder(bowlToAdd, bowlSize, bowlQuantity);
 
     // Reset the bowl builder state so the user can create a new bowl
     resetCurrentBowl();
@@ -194,6 +204,13 @@ function BowlBuilderPage({ baseOptions = [], proteinOptions = [], bowlSizes = []
     useEffect(() => {
       setIsVisible(true);
     }, []); // Empty dependency array means this effect runs only once after the initial render
+
+    // New handler to prevent default behavior when selecting a bowl size
+    const handleSizeSelection = (e, size) => {
+      e.preventDefault(); // Prevent default form submission behavior
+      e.stopPropagation(); // Stop event propagation
+      setBowlSize(size); // Set the selected size
+    };
 
     return (
       // Section container with ID, styling, and padding
@@ -224,8 +241,7 @@ function BowlBuilderPage({ baseOptions = [], proteinOptions = [], bowlSizes = []
                         <Card
                           // Apply h-100 for equal height, text-center, custom classes
                           // selected-size class applies border/shadow based on selection
-                          className={`h-100 text-center size-selector-card ${bowlSize.id === size.id ? 'border border-primary border-3 selected-size' : ''}`}
-                          onClick={() => setBowlSize(size)} // Set the selected size on click
+                          className={`h-100 text-center size-selector-card ${bowlSize.id === size.id ? 'selected-size' : ''}`}
                           style={{
                             cursor: 'pointer', // Indicate clickability
                             // Dynamic background color based on selection state
@@ -234,23 +250,30 @@ function BowlBuilderPage({ baseOptions = [], proteinOptions = [], bowlSizes = []
                             minHeight: '200px', // Ensure cards have a minimum height
                           }}
                         >
-                          {/* Card body with flex centering */}
-                          <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-                            {/* Emoji icon with dynamic size based on bowl size */}
-                            <div style={{
-                              fontSize: size.id === 'regular' ? '3.5rem' : size.id === 'medium' ? '4rem' : '4.5rem',
-                              opacity: '0.8',
-                              marginBottom: '15px'
-                            }}>
-                              🍜 {/* Bowl emoji */}
-                            </div>
-                            {/* Card title for the size name */}
-                            <Card.Title className="mb-2" style={{ color: 'white' }}>{size.name}</Card.Title>
-                            {/* Card text for price multiplier */}
-                            <Card.Text style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                              Price: ×{size.priceMultiplier.toFixed(1)} {/* Display multiplier */}
-                            </Card.Text>
-                          </Card.Body>
+                          {/* Use a button instead of direct onClick on the Card */}
+                          <button 
+                            className="size-select-btn" 
+                            onClick={(e) => handleSizeSelection(e, size)}
+                            type="button" // Explicitly set type to button to prevent form submission
+                          >
+                            {/* Card body with flex centering */}
+                            <Card.Body className="d-flex flex-column align-items-center justify-content-center">
+                              {/* Emoji icon with dynamic size based on bowl size */}
+                              <div style={{
+                                fontSize: size.id === 'regular' ? '3.5rem' : size.id === 'medium' ? '4rem' : '4.5rem',
+                                opacity: '0.8',
+                                marginBottom: '15px'
+                              }}>
+                                🍜 {/* Bowl emoji */}
+                              </div>
+                              {/* Card title for the size name */}
+                              <Card.Title className="mb-2" style={{ color: 'white' }}>{size.name}</Card.Title>
+                              {/* Card text for price multiplier */}
+                              <Card.Text style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                                Price: ×{size.priceMultiplier.toFixed(1)} {/* Display multiplier */}
+                              </Card.Text>
+                            </Card.Body>
+                          </button>
                         </Card>
                       </Col>
                     ))}

@@ -660,6 +660,9 @@ nav {
 
 /* Styling for the card price display */
 .card-price {
+  position: absolute; /* Position it absolutely within the card */
+  top: 15px; /* Position at the top */
+  right: 15px; /* Position at the right */
   font-size: 1.25rem; /* Set font size */
   font-weight: 600; /* Semi-bold font weight */
   color: #ffffff; /* White text color */
@@ -667,7 +670,9 @@ nav {
   display: inline-block; /* Allows background and padding */
   padding: 0.25rem 1rem; /* Padding around the price */
   border-radius: 50px; /* Pill shape */
-  margin-top: 0.5rem; /* Space above the price */
+  margin-top: 0; /* Remove top margin */
+  z-index: 3; /* Ensure it's above the gradient overlay */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
 }
 
 /* Styling for a button within the card */
@@ -692,6 +697,46 @@ nav {
   transform: translateY(-2px); /* Lift the button slightly */
   box-shadow: 0 6px 15px rgba(110, 72, 170, 0.6); /* Enhance shadow */
   background: linear-gradient(135deg, #7e58ba 0%, #ad60cb 100%) !important; /* Slightly change gradient, !important to override */
+}
+
+/* Styling for the danger button to remove items */
+.card-button-danger {
+  background: linear-gradient(135deg, #e53e3e 0%, #ef5350 100%) !important;
+  border: none !important;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  transition: all 0.3s ease;
+  color: white !important;
+  opacity: 1 !important;
+  z-index: 5;
+  position: relative;
+}
+
+/* Hover effect for the danger button */
+.card-button-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.6);
+  background: linear-gradient(135deg, #d32f2f 0%, #e57373 100%) !important;
+}
+
+/* Styling for the card buttons to ensure consistent size */
+.card-button,
+.card-button-danger {
+  width: 100px; /* Fixed width for all buttons */
+  padding: 0.6rem 0; /* Vertical padding only since we have fixed width */
+  text-align: center; /* Center the text */
+  font-weight: 600; /* Semi-bold font weight */
+  border-radius: 50px; /* Pill shape */
+  transition: all 0.3s ease; /* Smooth transition */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Add consistent margin between buttons in the button container */
+.d-flex.justify-content-between .card-button,
+.d-flex.justify-content-between .card-button-danger {
+  margin: 0 5px; /* Add horizontal margin for spacing */
 }
 
 /* ===== CAROUSEL STYLES ===== */
@@ -1129,7 +1174,7 @@ nav {
 
 /* Adjust the height of modern cards specifically within the grid layout */
 .card-grid .modern-card {
-  height: 280px; /* Set height */
+  height: 350px; /* Increased height to fit content and buttons */
   margin-bottom: 2rem; /* Add bottom margin for spacing */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
 }
@@ -1137,13 +1182,13 @@ nav {
 /* Responsive height adjustments for cards in the grid */
 @media (max-width: 992px) {
   .card-grid .modern-card {
-    height: 250px; /* Reduce height on medium screens */
+    height: 320px; /* Increased height on medium screens */
   }
 }
 
 @media (max-width: 768px) {
   .card-grid .modern-card {
-    height: 220px; /* Further reduce height on small screens */
+    height: 300px; /* Increased height on small screens */
   }
 
   .card-grid .card-title {
@@ -1193,6 +1238,12 @@ nav {
 .card-grid .quantity-selector {
   margin-top: auto; /* Push the selector to the bottom of the flex container */
   align-self: flex-end; /* Align the selector to the end of the cross axis */
+  margin-bottom: 1rem; /* Add bottom margin to prevent cutting off */
+}
+
+/* Ensure card buttons have enough space */
+.card-grid .card-button {
+  margin-bottom: 1rem; /* Add bottom margin to prevent cutting off */
 }
 
 /* ===== BOWL SIZE SELECTION STYLES ===== */
@@ -1207,10 +1258,76 @@ nav {
 .bowl-sizes .card {
   transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important; /* Smooth transition with a slightly springy effect */
   overflow: hidden; /* Hide overflowing content */
+  cursor: pointer; /* Change cursor to indicate clickable */
+}
+
+/* Style for bowl size selection buttons to prevent form submission */
+.bowl-sizes .size-select-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: block;
+  text-align: left; /* Align text to match card design */
+  position: relative;
+  z-index: 2; /* Ensure it's clickable above other elements */
+}
+
+/* Prevent focus outlines that might look bad with the card design */
+.bowl-sizes .size-select-btn:focus {
+  outline: none;
 }
 
 /* Hover effect for bowl size cards */
 .bowl-sizes .card:hover {
   transform: translateY(-5px); /* Lift the card slightly */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+/* Quantity badge for showing number of selected ingredients */
+.quantity-badge {
+  position: absolute;
+  top: -5px; /* Positioned below the price tag */
+  left: -5px; /* Aligned to the right */
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  font-size: 1rem;
+  z-index: 3; /* Ensure it's above other elements */
+}
+
+/* ===== Custom Ingredients Card Styles ===== */
+
+/* Specific styling for ingredients cards */
+.ingredients .card-grid .modern-card {
+  height: 420px !important; /* Fixed height specifically for ingredients cards */
+  margin-bottom: 2rem; /* Keep bottom margin for spacing */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Keep transition effects */
+}
+
+/* Ensure the buttons in ingredients cards have enough space */
+.ingredients .card-grid .d-flex.justify-content-between {
+  margin-bottom: 15px; /* Extra bottom margin to prevent button cutoff */
+}
+
+/* Maintain fixed height on different screen sizes */
+@media (max-width: 992px) {
+  .ingredients .card-grid .modern-card {
+    height: 420px !important; /* Keep consistent height on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .ingredients .card-grid .modern-card {
+    height: 420px !important; /* Keep consistent height on small screens */
+  }
 }
