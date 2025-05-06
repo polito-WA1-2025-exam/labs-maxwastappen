@@ -1,62 +1,124 @@
+/**
+ * @file Global Stylesheet
+ *
+ * This stylesheet defines the base styles for the application,
+ * including font settings, colors, basic element styles,
+ * and ensures a consistent dark mode appearance.
+ */
+
+/* ===== ROOT VARIABLES AND GLOBAL DEFAULTS ===== */
+
+/* Styles for the root element, applying across the entire document */
 :root {
+  /* Font stack for the entire application */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Default line height for text */
   line-height: 1.5;
+  /* Default font weight */
   font-weight: 400;
 
+  /* Hint to the browser to prefer dark mode */
   color-scheme: dark;
+  /* Default text color in dark mode */
   color: rgba(255, 255, 255, 0.87);
+  /* Default background color in dark mode */
   background-color: #242424;
 
+  /* Disable font synthesis for missing font styles */
   font-synthesis: none;
+  /* Optimize text rendering for legibility */
   text-rendering: optimizeLegibility;
+  /* Apply anti-aliasing for smoother font edges */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===== ANCHOR LINK STYLES ===== */
+
+/* Default styles for anchor links */
 a {
+  /* Font weight for links */
   font-weight: 500;
+  /* Default color for links */
   color: #646cff;
+  /* Remove default text decoration (underline) */
   text-decoration: inherit;
 }
+
+/* Hover effect for anchor links */
 a:hover {
+  /* Change color on hover */
   color: #535bf2;
 }
 
+/* ===== BODY STYLES ===== */
+
+/* Styles for the main document body */
 body {
+  /* Remove default margin and padding */
   margin: 0;
   padding: 0;
+  /* Minimum width for the body */
   min-width: 320px;
+  /* Ensure body takes at least the full viewport height */
   min-height: 100vh;
+  /* Specific background color for the body (a darker dark gray) */
   background-color: #121212;
+  /* Text color for the body */
   color: rgba(255, 255, 255, 0.87);
+  /* Set body width to 100% */
   width: 100%;
-  display: block;  /* Cambio da flex a block per evitare comportamenti indesiderati */
-  overflow-x: hidden; /* Prevenire lo scrolling orizzontale */
+  /* Changed from flex to block display to avoid unwanted layout behavior */
+  display: block;
+  /* Prevent horizontal scrolling for the body */
+  overflow-x: hidden;
 }
 
+/* ===== HEADING STYLES ===== */
+
+/* Styles for heading level 1 */
 h1 {
+  /* Font size for h1 */
   font-size: 3.2em;
+  /* Line height for h1 */
   line-height: 1.1;
+  /* Color for h1 (slightly brighter white) */
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* ===== BUTTON STYLES ===== */
+
+/* Default styles for buttons */
 button {
+  /* Rounded corners for buttons */
   border-radius: 8px;
+  /* Add a transparent border */
   border: 1px solid transparent;
+  /* Padding inside the button */
   padding: 0.6em 1.2em;
+  /* Font size */
   font-size: 1em;
+  /* Font weight */
   font-weight: 500;
+  /* Inherit font family from parent */
   font-family: inherit;
+  /* Background color (a dark gray) */
   background-color: #1a1a1a;
+  /* Change cursor on hover to indicate clickability */
   cursor: pointer;
+  /* Smooth transition for border color changes */
   transition: border-color 0.25s;
 }
+
+/* Hover effect for buttons */
 button:hover {
+  /* Change border color on hover */
   border-color: #646cff;
 }
+
+/* Focus state styles for buttons (for keyboard navigation) */
 button:focus,
 button:focus-visible {
+  /* Add an outline when the button is focused */
   outline: 4px auto -webkit-focus-ring-color;
 }
-
-/* Rimosso il media query per la light mode per mantenere sempre la dark mode */

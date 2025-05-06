@@ -12,13 +12,43 @@ import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-// Define data centrally
+/**
+ * @typedef {Object} Item
+ * @property {number} id - Unique identifier for the item.
+ * @property {string} name - Name of the item.
+ * @property {string} description - Description of the item.
+ * @property {number} price - Price of the item.
+ * @property {string} image - URL of the item's image.
+ */
+
+/**
+ * @typedef {Object} BowlSize
+ * @property {string} id - Unique identifier for the bowl size (e.g., 'regular', 'medium', 'large').
+ * @property {string} name - Name of the bowl size.
+ * @property {number} priceMultiplier - Multiplier to apply to the base price based on the bowl size.
+ */
+
+/**
+ * @typedef {Object} IngredientCategory
+ * @property {number} id - Unique identifier for the category.
+ * @property {string} category - Name of the category (e.g., 'Vegetables', 'Toppings', 'Dressings').
+ * @property {Item[]} items - Array of items within the category.
+ */
+
+/**
+ * @type {Item[]}
+ * Array of base options for the bowl.
+ */
 const baseOptions = [
     { id: 1, name: 'White Rice', description: 'Japanese short-grain white rice', price: 2.50, image: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?q=80&w=2070' },
     { id: 2, name: 'Brown Rice', description: 'Whole grain brown rice', price: 2.50, image: 'https://images.unsplash.com/photo-1557592722-a0a649c8c5c7?q=80&w=2070' },
     { id: 3, name: 'Mixed Greens', description: 'Fresh mixed salad greens', price: 3.00, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=2084' }
 ];
 
+/**
+ * @type {Item[]}
+ * Array of protein options for the bowl.
+ */
 const proteinOptions = [
     { id: 1, name: 'Tuna', description: 'Fresh tuna cubes', price: 4.50, image: 'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?q=80&w=2070' },
     { id: 2, name: 'Salmon', description: 'Norwegian salmon', price: 4.50, image: 'https://images.unsplash.com/photo-1526434426615-1abe81efcb0b?q=80&w=2070' },
@@ -26,13 +56,20 @@ const proteinOptions = [
     { id: 4, name: 'Tofu', description: 'Organic tofu', price: 3.00, image: 'https://images.unsplash.com/photo-1584948528512-fd980cd94361?q=80&w=1936' },
 ];
 
-// Add bowl size options with price multipliers
+/**
+ * @type {BowlSize[]}
+ * Array of bowl size options with price multipliers.
+ */
 const bowlSizes = [
     { id: 'regular', name: 'Regular', priceMultiplier: 1.0 },
     { id: 'medium', name: 'Medium', priceMultiplier: 1.3 },
     { id: 'large', name: 'Large', priceMultiplier: 1.5 }
 ];
 
+/**
+ * @type {IngredientCategory[]}
+ * Array of ingredient categories, each containing an array of items.
+ */
 const ingredientCategories = [
     {
         id: 1,
@@ -66,7 +103,11 @@ const ingredientCategories = [
     }
 ];
 
-// Helper to find item by ID - this will be exported to be used across components
+/**
+ * Finds an item (base, protein, or ingredient) by its ID.
+ * @param {number} id - The ID of the item to find.
+ * @returns {Item | null} - The item object with an added 'type' property, or null if not found.
+ */
 export const findItem = (id) => {
     const base = baseOptions.find(b => b.id === id);
     if (base) return { ...base, type: 'Base' };
@@ -79,16 +120,40 @@ export const findItem = (id) => {
     return null;
 };
 
-// Helper to get a unique key for bowls - this will be used for checking duplicates
+/**
+ * Generates a unique key for a bowl based on its base, proteins, ingredients, and size.
+ * @param {Object} bowl - The bowl object containing base, proteins, and ingredients.
+ * @param {BowlSize} size - The size of the bowl.
+ * @returns {string} - A unique key for the bowl.
+ */
 export const getBowlKey = (bowl, size) => {
     return `${bowl.base}-${JSON.stringify(bowl.proteins)}-${JSON.stringify(bowl.ingredients)}-${size.id}`;
 };
 
+/**
+ * Main App component that manages the application's state and routing.
+ * @returns {JSX.Element} - The rendered JSX element.
+ */
 function App() {
-  const [order, setOrder] = useState([]); // Array of bowl objects with amount field
-  const [nextBowlId, setNextBowlId] = useState(1); // For unique bowl keys/ids in the order
+  /**
+   * @type {[Array, function]}
+   * @description order - Array of bowl objects with amount field
+   * @description setOrder - Function to update the order state
+  */
+  const [order, setOrder] = useState([]);
+  /**
+   * @type {[number, function]}
+   * @description nextBowlId - For unique bowl keys/ids in the order
+   * @description setNextBowlId - Function to update the nextBowlId state
+   */
+  const [nextBowlId, setNextBowlId] = useState(1);
 
-  // Function to add a bowl to the order - will be passed to BowlBuilderPage
+  /**
+   * Adds a bowl to the order. If the bowl already exists, it updates the amount. Otherwise, it adds a new bowl to the order.
+   * @param {Object} bowl - The bowl object containing base, proteins, and ingredients.
+   * @param {BowlSize} bowlSize - The size of the bowl.
+   * @param {number} bowlQuantity - The quantity of the bowl to add.
+   */
   const handleAddBowlToOrder = (bowl, bowlSize, bowlQuantity) => {
     // Create a unique key for this bowl configuration
     const bowlKey = getBowlKey(bowl, bowlSize);
@@ -120,7 +185,11 @@ function App() {
     }
   };
 
-  // Functions to manipulate the order - will be passed to CartPage
+  /**
+   * Removes a bowl from the order by decreasing its amount. If the amount becomes 0 or less, the bowl is removed completely.
+   * @param {number} bowlIdToRemove - The ID of the bowl to remove.
+   * @param {number} [decreaseBy=1] - The amount to decrease the bowl by. Defaults to 1.
+   */
   const handleRemoveBowl = (bowlIdToRemove, decreaseBy = 1) => {
     setOrder(prevOrder => {
         return prevOrder.map(bowl => {
@@ -136,6 +205,10 @@ function App() {
     });
   };
 
+  /**
+   * Completely removes a bowl from the order.
+   * @param {number} bowlIdToRemove - The ID of the bowl to remove.
+   */
   const handleRemoveBowlCompletely = (bowlIdToRemove) => {
     setOrder(prevOrder => prevOrder.filter(bowl => bowl.id !== bowlIdToRemove));
   };
