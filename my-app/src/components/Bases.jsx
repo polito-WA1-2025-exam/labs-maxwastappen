@@ -53,6 +53,13 @@ function Bases({ baseOptions = [], selectedBaseId = null, onSelectBase = () => {
         };
     }, []); // Empty dependency array ensures this effect runs only once on mount and cleans up on unmount
 
+    // New handler to handle card selection without reloading
+    const handleSelectBase = (e, baseId) => {
+        e.preventDefault(); // Prevent default form submission behavior
+        e.stopPropagation(); // Stop event propagation
+        onSelectBase(baseId); // Call the provided onSelectBase handler
+    };
+
     return (
         // Section container with ID, custom styling classes, and vertical padding
         <div id='bases' className="bases section-content py-5">
@@ -85,7 +92,7 @@ function Bases({ baseOptions = [], selectedBaseId = null, onSelectBase = () => {
                     // If bases are available, render the grid of cards
                     // card-grid: Apply custom grid styling and initial animation state
                     // isVisible controls the 'visible' class for the grid animation
-                    <Row className={`card-grid ${isVisible ? 'visible' : ''}`}>
+                    <Row className={`card-grid bowl-sizes ${isVisible ? 'visible' : ''}`}>
                         {/* Map through the baseOptions array to render a card for each base */}
                         {baseOptions.map((base) => (
                             // Column for each base card
@@ -98,41 +105,53 @@ function Bases({ baseOptions = [], selectedBaseId = null, onSelectBase = () => {
                                     // modern-card: Apply custom card styling
                                     // h-100: Make cards equal height
                                     // Conditional classes for the border/highlight
-                                    className={`modern-card h-100 ${selectedBaseId === base.id ? 'border border-primary border-3 selected-size' : ''}`}
-                                    onClick={() => onSelectBase(base.id)} // Call the onSelectBase handler with the base ID when the card is clicked
-                                    style={{ cursor: 'pointer' }} // Indicate clickability
+                                    className={`modern-card h-100 ${selectedBaseId === base.id ? 'selected-size' : ''}`}
                                 >
-                                    {/* Card image */}
-                                    <Card.Img
-                                        src={base.image} // Image source from base data
-                                        alt={base.name} // Alt text for accessibility
-                                        className="modern-card-img" // Apply custom image styling
-                                    />
-                                    {/* Gradient overlay for the image */}
-                                    <div className="card-gradient-overlay"></div>
-                                    {/* Card content overlay, positioned over the image */}
-                                    <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
-                                        {/* card-content: Apply custom styling for the content area */}
-                                        <div className="card-content">
-                                            {/* card-title: Styles the title */}
-                                            <h3 className="card-title">{base.name}</h3>
-                                            {/* card-description: Styles the description */}
-                                            <p className="card-description">{base.description}</p>
-                                            {/* card-price: Styles the price, formatted to 2 decimal places */}
-                                            <p className="card-price">€{base.price.toFixed(2)}</p>
-                                        </div>
+                                    {/* Using a button instead of onClick on the Card itself */}
+                                    <button 
+                                        className="size-select-btn" 
+                                        onClick={(e) => handleSelectBase(e, base.id)}
+                                        type="button" // Explicitly set type to button to prevent form submission
+                                    >
+                                        {/* Card image */}
+                                        <Card.Img
+                                            src={base.image} // Image source from base data
+                                            alt={base.name} // Alt text for accessibility
+                                            className="modern-card-img" // Apply custom image styling
+                                        />
+                                        {/* Gradient overlay for the image */}
+                                        <div className="card-gradient-overlay"></div>
+                                        
+                                        {/* Price tag now positioned via CSS in top right */}
+                                        <p className="card-price">€{base.price.toFixed(2)}</p>
+                                        
+                                        {/* Card content overlay, positioned over the image */}
+                                        <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
+                                            {/* card-content: Apply custom styling for the content area */}
+                                            <div className="card-content">
+                                                {/* card-title: Styles the title */}
+                                                <h3 className="card-title">{base.name}</h3>
+                                                {/* card-description: Styles the description */}
+                                                <p className="card-description">{base.description}</p>
+                                            </div>
 
-                                        {/* Select Base Button */}
-                                        <Button
-                                            variant="primary" // Primary button style
-                                            className="card-button align-self-start mt-4" // Custom button class and margin
-                                            // Stop click propagation from the button to prevent triggering the card's onClick handler
-                                            onClick={(e) => { e.stopPropagation(); onSelectBase(base.id); }}
-                                        >
-                                            {/* Button text changes based on whether this base is selected */}
-                                            {selectedBaseId === base.id ? 'Selected' : 'Select Base'}
-                                        </Button>
-                                    </Card.ImgOverlay>
+                                            {/* Modified button layout for consistent positioning */}
+                                            <div className="d-flex justify-content-between w-100 mb-2">
+                                                {/* Select Base Button */}
+                                                <Button
+                                                    variant="primary"
+                                                    className="card-button"
+                                                    onClick={(e) => handleSelectBase(e, base.id)}
+                                                    type="button"
+                                                >
+                                                    {selectedBaseId === base.id ? 'Selected' : 'Select Base'}
+                                                </Button>
+                                                
+                                                {/* Empty div to maintain space for positioning consistency */}
+                                                <div></div>
+                                            </div>
+                                        </Card.ImgOverlay>
+                                    </button>
                                 </Card>
                             </Col>
                         ))}

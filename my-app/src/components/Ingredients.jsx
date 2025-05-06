@@ -154,61 +154,74 @@ function Ingredients({ ingredientCategories = [], selectedIngredients = {}, onIn
                                                     const quantity = getQuantity(item.id);
                                                     return (
                                                         // Column for each ingredient card
-                                                        // xs={12}: Full width on extra small screens
-                                                        // sm={6}: 6 columns on small screens (2 cards per row)
-                                                        // md={4}: 4 columns on medium screens (3 cards per row)
-                                                        // lg={3}: 3 columns on large screens (4 cards per row)
-                                                        <Col key={item.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                                                            {/* Card container with custom styling and conditional border/highlight if quantity > 0 */}
-                                                            <Card className={`modern-card h-100 ${quantity > 0 ? 'border border-primary border-1' : ''}`}>
-                                                                {/* Card image */}
-                                                                <Card.Img
-                                                                    src={item.image} // Image source from item data
-                                                                    alt={item.name} // Alt text
-                                                                    className="modern-card-img" // Apply custom image styling
-                                                                />
-                                                                {/* Gradient overlay */}
+                                                        // Match exactly the same column layout as the Proteins component
+                                                        <Col key={item.id} xs={12} md={6} lg={3} className="mb-4">
+                                                            {/* Card markup for ingredient cards that exactly matches the Proteins cards */}
+                                                            <Card
+                                                                className={`modern-card h-100 ${quantity > 0 ? 'border border-primary border-3 selected-size' : ''}`}
+                                                                style={{ cursor: 'pointer', height: '400px' }}
+                                                                onClick={() => increaseQuantity(item.id)}
+                                                            >
+                                                                {/* Card image container to match Proteins */}
+                                                                <div className="card-image-container">
+                                                                    <Card.Img
+                                                                        src={item.image}
+                                                                        alt={item.name}
+                                                                        className="modern-card-img"
+                                                                    />
+                                                                </div>
+                                                                {/* Gradient overlay for the image */}
                                                                 <div className="card-gradient-overlay"></div>
-                                                                {/* Card content overlay */}
-                                                                <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
-                                                                    {/* card-content: Apply custom styling */}
+                                                                
+                                                                {/* Price tag now positioned via CSS in top right */}
+                                                                <p className="card-price">€{item.price.toFixed(2)}</p>
+                                                                
+                                                                {/* Card content overlay, positioned over the image */}
+                                                                <Card.ImgOverlay 
+                                                                    className="d-flex flex-column justify-content-between p-4"
+                                                                >
+                                                                    {/* card-content: Apply custom styling for the content area */}
                                                                     <div className="card-content">
                                                                         {/* card-title: Styles the title */}
                                                                         <h3 className="card-title">{item.name}</h3>
-                                                                        {/* card-price: Styles the price */}
-                                                                        <p className="card-price">€{item.price.toFixed(2)}</p> {/* Ensure price format */}
+                                                                        {/* card-description: Styles the description */}
+                                                                        <p className="card-description">{item.description || 'Fresh ingredient for your bowl'}</p>
+                                                                        
+                                                                        {/* Show quantity badge if ingredient is selected */}
+                                                                        {quantity > 0 && (
+                                                                            <div className="quantity-badge">
+                                                                                ×{quantity}
+                                                                            </div>
+                                                                        )}
                                                                     </div>
-
-                                                                    {/* Improved Quantity Counter Component */}
-                                                                    {/* improved-counter: Apply custom styling for the counter */}
-                                                                    <div className="improved-counter">
-                                                                        {/* Decrement Button */}
+                                                                    
+                                                                    {/* Modified button layout - Select on left, Remove on right */}
+                                                                    <div className="d-flex justify-content-between w-100 mb-2">
                                                                         <Button
-                                                                            variant="light" // Light button style
-                                                                            className="counter-btn decrement" // Custom button class for counter and decrement styling
-                                                                            // Stop click propagation from the button to prevent triggering unwanted parent clicks
+                                                                            variant="primary"
+                                                                            className="card-button"
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
-                                                                                decreaseQuantity(item.id); // Call decrease handler
-                                                                            }}
-                                                                            disabled={quantity === 0} // Disable button if quantity is 0
-                                                                        >
-                                                                            − {/* Minus symbol */}
-                                                                        </Button>
-                                                                        {/* Quantity Display */}
-                                                                        <span className="counter-display">{quantity}</span> {/* Display current quantity */}
-                                                                        {/* Increment Button */}
-                                                                        <Button
-                                                                            variant="light" // Light button style
-                                                                            className="counter-btn increment" // Custom button class for counter and increment styling
-                                                                            // Stop click propagation from the button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                increaseQuantity(item.id); // Call increase handler
+                                                                                increaseQuantity(item.id);
                                                                             }}
                                                                         >
-                                                                            + {/* Plus symbol */}
+                                                                            {quantity > 0 ? 'Add More' : 'Select'}
                                                                         </Button>
+                                                                        
+                                                                        {quantity > 0 ? (
+                                                                            <Button
+                                                                                variant="outline-danger"
+                                                                                className="card-button-danger"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    onIngredientChange(item.id, 0);
+                                                                                }}
+                                                                            >
+                                                                                Remove
+                                                                            </Button>
+                                                                        ) : (
+                                                                            <div></div> 
+                                                                        )}
                                                                     </div>
                                                                 </Card.ImgOverlay>
                                                             </Card>
