@@ -7,10 +7,9 @@ import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
-// Receive ingredientCategories, selectedIngredients, and onIngredientChange as props
-function Ingredients({ ingredientCategories, selectedIngredients, onIngredientChange }) {
+// Receive ingredientCategories, selectedIngredients, and onIngredientChange as props with defaults
+function Ingredients({ ingredientCategories = [], selectedIngredients = {}, onIngredientChange = () => {} }) {
     const [isVisible, setIsVisible] = useState(false);
-    // Remove internal quantities state, it's now managed by App.jsx via selectedIngredients prop
 
     useEffect(() => {
         const handleScroll = () => {
@@ -60,75 +59,84 @@ function Ingredients({ ingredientCategories, selectedIngredients, onIngredientCh
                     </Col>
                 </Row>
 
-                <Row className={`fade-in-delay ${isVisible ? 'visible' : ''}`}>
-                    <Col>
-                        <div className="ingredients-tabs">
-                            <Tabs
-                                defaultActiveKey={ingredientCategories[0]?.category.toLowerCase() || 'vegetables'} // Safer default key
-                                id="ingredients-categories"
-                                className="mb-5 justify-content-center custom-tabs"
-                            >
-                                {ingredientCategories.map(category => (
-                                    <Tab
-                                        eventKey={category.category.toLowerCase()}
-                                        title={category.category}
-                                        key={category.id}
-                                    >
-                                        <Row className={`card-grid ${isVisible ? 'visible' : ''}`}>
-                                            {category.items.map(item => {
-                                                const quantity = getQuantity(item.id); // Get current quantity from props
-                                                return (
-                                                    <Col key={item.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                                                        <Card className="modern-card h-100">
-                                                            <Card.Img
-                                                                src={item.image}
-                                                                alt={item.name}
-                                                                className="modern-card-img"
-                                                            />
-                                                            <div className="card-gradient-overlay"></div>
-                                                            <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
-                                                                <div className="card-content">
-                                                                    <h3 className="card-title">{item.name}</h3>
-                                                                    <p className="card-price">€{item.price.toFixed(2)}</p> {/* Ensure price format */}
-                                                                </div>
+                {ingredientCategories.length === 0 ? (
+                    <Row className="justify-content-center">
+                        <Col md={8} className="text-center">
+                            <div className="dark-bg p-4 rounded">
+                                <p>Loading ingredient options...</p>
+                            </div>
+                        </Col>
+                    </Row>
+                ) : (
+                    <Row className={`fade-in-delay ${isVisible ? 'visible' : ''}`}>
+                        <Col>
+                            <div className="ingredients-tabs">
+                                <Tabs
+                                    defaultActiveKey={ingredientCategories[0]?.category.toLowerCase() || 'vegetables'}
+                                    id="ingredients-categories"
+                                    className="mb-5 justify-content-center custom-tabs"
+                                >
+                                    {ingredientCategories.map(category => (
+                                        <Tab
+                                            eventKey={category.category.toLowerCase()}
+                                            title={category.category}
+                                            key={category.id}
+                                        >
+                                            <Row className={`card-grid ${isVisible ? 'visible' : ''}`}>
+                                                {category.items.map(item => {
+                                                    const quantity = getQuantity(item.id);
+                                                    return (
+                                                        <Col key={item.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                                                            <Card className={`modern-card h-100 ${quantity > 0 ? 'border border-primary border-1' : ''}`}>
+                                                                <Card.Img
+                                                                    src={item.image}
+                                                                    alt={item.name}
+                                                                    className="modern-card-img"
+                                                                />
+                                                                <div className="card-gradient-overlay"></div>
+                                                                <Card.ImgOverlay className="d-flex flex-column justify-content-between p-4">
+                                                                    <div className="card-content">
+                                                                        <h3 className="card-title">{item.name}</h3>
+                                                                        <p className="card-price">€{item.price.toFixed(2)}</p>
+                                                                    </div>
 
-                                                                {/* Improved counter styling */}
-                                                                <div className="improved-counter">
-                                                                    <Button
-                                                                        variant="light"
-                                                                        className="counter-btn decrement"
-                                                                        onClick={(e) => { 
-                                                                            e.stopPropagation(); // Prevent event bubbling
-                                                                            decreaseQuantity(item.id); 
-                                                                        }}
-                                                                        disabled={quantity === 0}
-                                                                    >
-                                                                        −
-                                                                    </Button>
-                                                                    <span className="counter-display">{quantity}</span>
-                                                                    <Button
-                                                                        variant="light"
-                                                                        className="counter-btn increment"
-                                                                        onClick={(e) => { 
-                                                                            e.stopPropagation(); // Prevent event bubbling
-                                                                            increaseQuantity(item.id); 
-                                                                        }}
-                                                                    >
-                                                                        +
-                                                                    </Button>
-                                                                </div>
-                                                            </Card.ImgOverlay>
-                                                        </Card>
-                                                    </Col>
-                                                );
-                                            })}
-                                        </Row>
-                                    </Tab>
-                                ))}
-                            </Tabs>
-                        </div>
-                    </Col>
-                </Row>
+                                                                    <div className="improved-counter">
+                                                                        <Button
+                                                                            variant="light"
+                                                                            className="counter-btn decrement"
+                                                                            onClick={(e) => { 
+                                                                                e.stopPropagation();
+                                                                                decreaseQuantity(item.id); 
+                                                                            }}
+                                                                            disabled={quantity === 0}
+                                                                        >
+                                                                            −
+                                                                        </Button>
+                                                                        <span className="counter-display">{quantity}</span>
+                                                                        <Button
+                                                                            variant="light"
+                                                                            className="counter-btn increment"
+                                                                            onClick={(e) => { 
+                                                                                e.stopPropagation();
+                                                                                increaseQuantity(item.id); 
+                                                                            }}
+                                                                        >
+                                                                            +
+                                                                        </Button>
+                                                                    </div>
+                                                                </Card.ImgOverlay>
+                                                            </Card>
+                                                        </Col>
+                                                    );
+                                                })}
+                                            </Row>
+                                        </Tab>
+                                    ))}
+                                </Tabs>
+                            </div>
+                        </Col>
+                    </Row>
+                )}
             </Container>
         </div>
     );

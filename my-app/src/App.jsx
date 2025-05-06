@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import BowlBuilderPage from './pages/BowlBuilderPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderConfirmationPage from './pages/OrderConfirmationPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import MenuPage from './pages/MenuPage';
 import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Navigation from './components/Navigation.jsx';
-import Hero from './components/Hero.jsx';
-import Bases from './components/Bases.jsx';
-import Proteins from './components/Proteins.jsx';
-import Ingredients from './components/Ingredients.jsx';
-import Footer from './components/Footer.jsx';
-import OrderForm from './components/OrderForm.jsx';
-import { Container, Row, Col, Button, Card, ListGroup, Form, ButtonGroup } from 'react-bootstrap'; // Added Form and ButtonGroup for bowl size/quantity
 
 // Define data centrally
 const baseOptions = [
@@ -65,8 +66,8 @@ const ingredientCategories = [
     }
 ];
 
-// Helper to find item by ID
-const findItem = (id) => {
+// Helper to find item by ID - this will be exported to be used across components
+export const findItem = (id) => {
     const base = baseOptions.find(b => b.id === id);
     if (base) return { ...base, type: 'Base' };
     const protein = proteinOptions.find(p => p.id === id);
@@ -78,149 +79,19 @@ const findItem = (id) => {
     return null;
 };
 
+// Helper to get a unique key for bowls - this will be used for checking duplicates
+export const getBowlKey = (bowl, size) => {
+    return `${bowl.base}-${JSON.stringify(bowl.proteins)}-${JSON.stringify(bowl.ingredients)}-${size.id}`;
+};
 
 function App() {
   const [order, setOrder] = useState([]); // Array of bowl objects with amount field
-  const [bowlSize, setBowlSize] = useState(bowlSizes[0]); // Default to regular size
-  const [currentBowl, setCurrentBowl] = useState({
-    base: null, // id of selected base
-    proteins: {}, // { proteinId: quantity }
-    ingredients: {} // { ingredientId: quantity }
-  });
   const [nextBowlId, setNextBowlId] = useState(1); // For unique bowl keys/ids in the order
-  // Add bowlQuantity state at the component level instead of inside the render function
-  const [bowlQuantity, setBowlQuantity] = useState(1);
 
-  // Create a separate component for size selection that comes before other sections
-  const BowlSizeSelector = () => {
-    const [isVisible, setIsVisible] = useState(false);
-    
-    useEffect(() => {
-      setIsVisible(true); // Show component with animation
-    }, []);
-    
-    return (
-      <div id="bowl-sizes" className="bowl-sizes section-content py-5">
-        <Container>
-          <Row className="mb-5">
-            <Col className="text-center">
-              <div className={`section-header fade-in ${isVisible ? 'visible' : ''}`}>
-                <h2 className="section-title">Select Bowl Size</h2>
-                <div className="section-divider"></div>
-                <p className="section-subtitle">Choose your perfect bowl size to start your meal</p>
-              </div>
-            </Col>
-          </Row>
-          
-          <Row className={`justify-content-center fade-in ${isVisible ? 'visible' : ''}`}>
-            <Col md={10} lg={8}>
-              <Card className="dark-bg mb-4">
-                <Card.Body className="py-4">
-                  <Card.Title className="mb-4 text-center">Bowl Size Options</Card.Title>
-                  <Row>
-                    {bowlSizes.map((size) => (
-                      <Col key={size.id} md={4} className="mb-3">
-                        <Card 
-                          className={`h-100 text-center size-selector-card ${bowlSize.id === size.id ? 'border border-primary border-3 selected-size' : ''}`}
-                          onClick={() => setBowlSize(size)}
-                          style={{ 
-                            cursor: 'pointer',
-                            background: bowlSize.id === size.id ? 'rgba(110, 72, 170, 0.3)' : 'rgba(30, 30, 30, 0.7)',
-                            transition: 'all 0.3s ease',
-                            minHeight: '200px', // Set minimum height
-                          }}
-                        >
-                          <Card.Body className="d-flex flex-column align-items-center justify-content-center">
-                            <div style={{ 
-                              fontSize: size.id === 'regular' ? '3.5rem' : size.id === 'medium' ? '4rem' : '4.5rem',
-                              opacity: '0.8',
-                              marginBottom: '15px'
-                            }}>
-                              🍜
-                            </div>
-                            <Card.Title className="mb-2" style={{ color: 'white' }}>{size.name}</Card.Title>
-                            <Card.Text style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                              Price: ×{size.priceMultiplier.toFixed(1)}
-                            </Card.Text>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
-                  <div className="text-center mt-3" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                    <small>The selected size affects all ingredients quantity and price</small>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    );
-  };
-
-  const handleSelectBase = (baseId) => {
-    setCurrentBowl(prev => ({ ...prev, base: baseId }));
-  };
-
-  const handleSelectProtein = (proteinId) => {
-    setCurrentBowl(prev => {
-      const newProteins = { ...prev.proteins };
-      if (newProteins[proteinId]) {
-        // If protein is already selected, remove it
-        delete newProteins[proteinId];
-        return { ...prev, proteins: newProteins };
-      } else {
-        // Otherwise, add the new protein
-        return { ...prev, proteins: { ...newProteins, [proteinId]: 1 } };
-      }
-    });
-  };
-
-  const handleIngredientChange = (ingredientId, quantity) => {
-    setCurrentBowl(prev => {
-      const newIngredients = { ...prev.ingredients };
-      if (quantity > 0) {
-        newIngredients[ingredientId] = quantity;
-      } else {
-        delete newIngredients[ingredientId]; // Remove if quantity is 0
-      }
-      return { ...prev, ingredients: newIngredients };
-    });
-  };
-
-  const calculateBowlPrice = (bowl) => {
-    let price = 0;
-    if (bowl.base) {
-        const baseItem = findItem(bowl.base);
-        if (baseItem) price += baseItem.price;
-    }
-    Object.entries(bowl.proteins).forEach(([id, quantity]) => {
-        const proteinItem = findItem(parseInt(id)); // Ensure id is number
-        if (proteinItem) price += proteinItem.price * quantity;
-    });
-    Object.entries(bowl.ingredients).forEach(([id, quantity]) => {
-        const ingredientItem = findItem(parseInt(id)); // Ensure id is number
-        if (ingredientItem) price += ingredientItem.price * quantity;
-    });
-    price *= bowlSize.priceMultiplier; // Apply size multiplier
-    return price;
-  };
-
-  const resetCurrentBowl = () => {
-    setCurrentBowl({ base: null, proteins: {}, ingredients: {} });
-  };
-
-  const handleAddBowlToOrder = () => {
-    if (!currentBowl.base || Object.keys(currentBowl.proteins).length === 0) {
-        alert("Please select a base and a protein for your bowl.");
-        return;
-    }
-
-    const bowlPrice = calculateBowlPrice(currentBowl);
-    
+  // Function to add a bowl to the order - will be passed to BowlBuilderPage
+  const handleAddBowlToOrder = (bowl, bowlSize, bowlQuantity) => {
     // Create a unique key for this bowl configuration
-    const bowlKey = getBowlKey(currentBowl, bowlSize);
+    const bowlKey = getBowlKey(bowl, bowlSize);
     
     // Check if this exact bowl combination already exists in the order
     const existingBowlIndex = order.findIndex(item => getBowlKey(item, item.size) === bowlKey);
@@ -239,25 +110,17 @@ function App() {
         // Otherwise add a new bowl with amount
         const newBowl = {
             id: nextBowlId,
-            ...currentBowl,
+            ...bowl,
             size: bowlSize, // Include the bowl size in the order
-            price: bowlPrice,
             amount: bowlQuantity // Initial amount from the quantity selector
         };
         
         setOrder(prevOrder => [...prevOrder, newBowl]);
         setNextBowlId(prevId => prevId + 1); // Increment ID for the next bowl
     }
-    
-    resetCurrentBowl(); // Reset selections for the next bowl
-    setBowlQuantity(1);  // Reset quantity to 1
   };
 
-  // Helper function to create a unique key for a bowl based on its contents
-  const getBowlKey = (bowl, size) => {
-    return `${bowl.base}-${JSON.stringify(bowl.proteins)}-${JSON.stringify(bowl.ingredients)}-${size.id}`;
-  };
-
+  // Functions to manipulate the order - will be passed to CartPage
   const handleRemoveBowl = (bowlIdToRemove, decreaseBy = 1) => {
     setOrder(prevOrder => {
         return prevOrder.map(bowl => {
@@ -277,164 +140,57 @@ function App() {
     setOrder(prevOrder => prevOrder.filter(bowl => bowl.id !== bowlIdToRemove));
   };
 
-  // --- Bowl Builder Section ---
-  const renderCurrentBowlSummary = () => {
-    const base = currentBowl.base ? findItem(currentBowl.base) : null;
-    const proteinItems = Object.entries(currentBowl.proteins).map(([id, quantity]) => {
-        const item = findItem(parseInt(id));
-        return item ? { ...item, quantity } : null;
-    }).filter(item => item !== null);
-    const ingredientsList = Object.entries(currentBowl.ingredients).map(([id, quantity]) => {
-        const item = findItem(parseInt(id));
-        return item ? { ...item, quantity } : null;
-    }).filter(item => item !== null);
-
-    const currentPrice = calculateBowlPrice(currentBowl);
-    
-    // Handle quantity change using the component-level state
-    const handleQuantityChange = (amount) => {
-      const newQuantity = Math.max(1, bowlQuantity + amount); // Minimum quantity is 1
-      setBowlQuantity(newQuantity);
-    };
-
-    return (
-        <Card className="dark-bg mb-4">
-            <Card.Body>
-                <Card.Title className="mb-3">Your Next Bowl</Card.Title>
-                
-                <ListGroup variant="flush">
-                    {base && <ListGroup.Item className="dark-bg d-flex justify-content-between"><span>Base: {base.name}</span> <span>€{base.price.toFixed(2)}</span></ListGroup.Item>}
-                    {proteinItems.length > 0 && <ListGroup.Item className="dark-bg d-flex justify-content-between"><span>Protein{proteinItems.length > 1 ? 's' : ''}: {proteinItems.map(p => `${p.name}${p.quantity > 1 ? ` ×${p.quantity}` : ''}`).join(', ')}</span> <span>€{proteinItems.reduce((total, p) => total + (p.price * p.quantity), 0).toFixed(2)}</span></ListGroup.Item>}
-                    {ingredientsList.length > 0 && <ListGroup.Item className="dark-bg pt-2 pb-0"><span className="fw-bold">Ingredients:</span></ListGroup.Item>}
-                    {ingredientsList.map(ing => (
-                         <ListGroup.Item key={ing.id} className="dark-bg d-flex justify-content-between ps-4">
-                            <span>{ing.name} x {ing.quantity}</span>
-                            <span>€{(ing.price * ing.quantity).toFixed(2)}</span>
-                        </ListGroup.Item>
-                    ))}
-                     <ListGroup.Item className="dark-bg fw-bold d-flex justify-content-between mt-2">
-                        <span>Bowl Size:</span>
-                        <span>{bowlSize.name} (×{bowlSize.priceMultiplier})</span>
-                    </ListGroup.Item>
-                     <ListGroup.Item className="dark-bg fw-bold d-flex justify-content-between">
-                        <span>Price per Bowl:</span>
-                        <span>€{currentPrice.toFixed(2)}</span>
-                    </ListGroup.Item>
-                </ListGroup>
-                
-                {/* Bowl Quantity Selector */}
-                <div className="mt-3 mb-3">
-                    <label className="d-block mb-2 fw-bold">Quantity:</label>
-                    <div className="modern-quantity-selector d-flex align-items-center">
-                        <Button 
-                            variant="outline-light" 
-                            className="modern-quantity-btn"
-                            onClick={() => handleQuantityChange(-1)}
-                            disabled={bowlQuantity <= 1}
-                        >
-                            −
-                        </Button>
-                        <span className="modern-quantity-display">{bowlQuantity}</span>
-                        <Button 
-                            variant="outline-light" 
-                            className="modern-quantity-btn"
-                            onClick={() => handleQuantityChange(1)}
-                        >
-                            +
-                        </Button>
-                        <span className="ms-3 fw-bold">Total: €{(currentPrice * bowlQuantity).toFixed(2)}</span>
-                    </div>
-                </div>
-                
-                <Button
-                    variant="primary"
-                    className="w-100 mt-3 card-button"
-                    onClick={() => {
-                      // Add the bowl with the correct quantity instead of calling handleAddBowlToOrder multiple times
-                      handleAddBowlToOrder();
-                    }}
-                    disabled={!currentBowl.base || Object.keys(currentBowl.proteins).length === 0}
-                >
-                    Add {bowlQuantity > 1 ? `${bowlQuantity} Bowls` : 'Bowl'} to Order
-                </Button>
-            </Card.Body>
-        </Card>
-    );
-  };
-  // --- End Bowl Builder Section ---
-
-
   return (
-    <div className="App dark-mode">
-      <Navigation />
-      <main>
-        <section className="section-darker"><Hero /></section>
-        
-        {/* Add Bowl Size Selection as the first interactive section */}
-        <section className="section-lighter">
-            <BowlSizeSelector />
-        </section>
-        
-        <section className="section-darker">
-            <Bases
-                baseOptions={baseOptions}
-                selectedBaseId={currentBowl.base}
-                onSelectBase={handleSelectBase}
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route 
+          path="/build" 
+          element={
+            <BowlBuilderPage 
+              baseOptions={baseOptions}
+              proteinOptions={proteinOptions}
+              bowlSizes={bowlSizes}
+              ingredientCategories={ingredientCategories}
+              onAddBowlToOrder={handleAddBowlToOrder}
+              findItem={findItem}
             />
-        </section>
-        <section className="section-lighter">
-            <Proteins
-                proteinOptions={proteinOptions}
-                selectedProteins={currentBowl.proteins}
-                bowlSize={bowlSize}
-                onProteinChange={(proteinId, newCount) => {
-                  setCurrentBowl(prev => {
-                    const newProteins = { ...prev.proteins };
-                    
-                    if (newCount > 0) {
-                      newProteins[proteinId] = newCount;
-                    } else {
-                      delete newProteins[proteinId];
-                    }
-                    
-                    return { 
-                      ...prev,
-                      proteins: newProteins
-                    };
-                  });
-                }}
+          } 
+        />
+        <Route 
+          path="/cart" 
+          element={
+            <CartPage 
+              order={order}
+              onRemoveBowl={handleRemoveBowl}
+              onRemoveBowlCompletely={handleRemoveBowlCompletely}
+              findItem={findItem}
             />
-        </section>
-        <section className="section-darker">
-            <Ingredients
-                ingredientCategories={ingredientCategories}
-                selectedIngredients={currentBowl.ingredients}
-                onIngredientChange={handleIngredientChange}
+          } 
+        />
+        <Route 
+          path="/checkout" 
+          element={
+            <CheckoutPage 
+              order={order}
+              findItem={findItem}
             />
-        </section>
-        {/* Bowl Builder Section */}
-        <section className="section-lighter py-5">
-            <Container>
-                <Row className="justify-content-center">
-                     <Col md={8} lg={6}>
-                        {renderCurrentBowlSummary()}
-                    </Col>
-                </Row>
-            </Container>
-        </section>
-        {/* End Bowl Builder Section */}
-        <section className="section-darker"> {/* Changed section class for contrast */}
-            <OrderForm
-                order={order} // Pass the array of bowls with amount
-                onRemoveBowl={handleRemoveBowl} // Pass the remove handler (decreases by 1)
-                onRemoveBowlCompletely={handleRemoveBowlCompletely} // Pass handler to remove entire bowl
-                findItem={findItem} // Pass helper to find item details
-                // onSubmit will be handled inside OrderForm for customer details
+          } 
+        />
+        <Route 
+          path="/confirmation" 
+          element={
+            <OrderConfirmationPage 
+              order={order}
+              findItem={findItem}
             />
-        </section>
-      </main>
-      <Footer />
-    </div>
+          } 
+        />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/menu" element={<MenuPage />} />
+      </Routes>
+    </Router>
   );
 }
 
